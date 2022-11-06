@@ -15,6 +15,7 @@ public class LoadConfig {
     public static String EntityDamage;
     public static String DecimalFormat;
     public static String ExceedRanke;
+    public static String RankeRewardMessage;
     public static Boolean Switch;
     public static List<String> Suffix;
     public static List<String> HoverPrefix;
@@ -23,6 +24,7 @@ public class LoadConfig {
         plugin.getConfig().options().copyDefaults();
         plugin.saveDefaultConfig();
         Switch = plugin.getConfig().getBoolean("Switch");
+        RankeRewardMessage = plugin.getConfig().getString("RankeRewardMessage");
         ExceedRanke = plugin.getConfig().getString("ExceedRanke");
         DecimalFormat = plugin.getConfig().getString("DecimalFormat");
         DeathMessage = plugin.getConfig().getString("DeathMessage");

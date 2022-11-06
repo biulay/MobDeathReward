@@ -1,4 +1,4 @@
-Boss:
+Boss:  #Rank是按排名分发奖励，Random随机分发奖励
   黄金史莱姆: #MythicMobs中怪物的ID，不是显示名
     Rank:
       1:                                #按伤害排名发放奖励按照例子来写就可以了,不要随便缩进
@@ -8,16 +8,13 @@ Boss:
       3:
         - "give %player_name% stone 64"
   终末龙:
-    Rank:
+    Random:
       1:
         - "give %player_name% stone 64"
         - "eco give %player_name% 500"
-      2:
-        - "give %player_name% stone 64"
-      3:
-        - "give %player_name% stone 64"
-      4:
-        - "give %player_name% stone 64"
+        - "eco give %player_name% 1500"
+        - "eco give %player_name% 5100"
+        - "eco give %player_name% 5010"
 
 
 DeathMessage: "已击杀了 {mob} {prefix}"
@@ -32,7 +29,7 @@ Suffix:
 Prefix: "[§eBoss奖励分配§r] "
 EntityDamage: "§f§l对 {mob} §f§l造成了 {entityDamage}" #玩家对设定的Boss造成伤害显示当前对该boss的伤害
 ExceedRanke: "§f§l已超出设定的奖励列表"  #如果玩家伤害排名超出了设定的奖励序列就给该玩家提示
-
+RankeRewardMessage: "你已获得第{rank}名奖励" #给玩家发送对应排名的奖励消息
 
 #以下设置不懂不要乱动
 DecimalFormat: "#.0"  #保留几位小数

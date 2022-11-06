@@ -143,6 +143,8 @@ public class MobsDeathEvent implements Listener {
                     while (List.hasNext()) {
                         Map.Entry<Integer, List<String>> entry1 = List.next();
                         if (entry.getKey() == entry1.getKey()) {
+                            String RankRewardMessage = RankeRewardMessage.replace("{rank}",String.valueOf(entry.getKey()));
+                            Bukkit.getPlayer(entry.getValue()).sendMessage(RankRewardMessage);
                             for (String Command : entry1.getValue()) {
                                 Command = PlaceholderAPI.setPlaceholders(Bukkit.getPlayer(entry.getValue()), Command);
                                 Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), Command);
