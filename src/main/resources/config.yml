@@ -1,21 +1,23 @@
 Boss:
   黄金史莱姆: #MythicMobs中怪物的ID，不是显示名
-    1:                                #按伤害排名发放奖励按照例子来写就可以了,不要随便缩进
-      - "give %player_name% stone 64"
-    2:                                #按照排名来给对应排名的玩家执行指令，如果伤害列表就2个玩家那么就执行到2排名的指令.
-      - "give %player_name% stone 64"
-    3:
-      - "give %player_name% stone 64"
+    Rank:
+      1:                                #按伤害排名发放奖励按照例子来写就可以了,不要随便缩进
+        - "give %player_name% stone 64"
+      2:                                #按照排名来给对应排名的玩家执行指令，如果伤害列表就2个玩家那么就执行到2排名的指令.
+        - "give %player_name% stone 64"
+      3:
+        - "give %player_name% stone 64"
   终末龙:
-    1:
-      - "give %player_name% stone 64"
-      - "eco give %player_name% 500"
-    2:
-      - "give %player_name% stone 64"
-    3:
-      - "give %player_name% stone 64"
-    4:
-      - "give %player_name% stone 64"
+    Rank:
+      1:
+        - "give %player_name% stone 64"
+        - "eco give %player_name% 500"
+      2:
+        - "give %player_name% stone 64"
+      3:
+        - "give %player_name% stone 64"
+      4:
+        - "give %player_name% stone 64"
 
 
 DeathMessage: "已击杀了 {mob} {prefix}"

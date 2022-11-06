@@ -63,16 +63,24 @@ public class MobsDeathEvent implements Listener {
                             Map.Entry<Integer, String> entry = it.next();
                             for (String s : pl.getConfig().getConfigurationSection("Boss." +
                                     apiHelper.getMythicMobInstance(event.getEntity()).getType().getInternalName()).getKeys(false)) {
-                                List<String> RankeCommand = pl.getConfig().getStringList
-                                        ("Boss." + apiHelper.getMythicMobInstance(event.getEntity()).getType().getInternalName() + "." + s);
-                                if (entry.getKey() == Integer.valueOf(s)) {
-                                    for (String command : RankeCommand) {
-                                        command = PlaceholderAPI.setPlaceholders(Bukkit.getPlayer(entry.getValue()), command);
-                                        Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), command);
-                                    }
-                                }
-                                if (entry.getKey() > Integer.valueOf(s)) {
-                                    Bukkit.getPlayer(entry.getValue()).sendMessage(ExceedRanke);
+                                String a = pl.getConfig().getString("Boss." +
+                                        apiHelper.getMythicMobInstance(event.getEntity()).getType().getInternalName());
+                                Bukkit.getPlayer("Biulay").sendMessage(a);
+                                switch (s){
+                                    case "Ranke":
+                                        List<String> RankeCommand = pl.getConfig().getStringList
+                                                ("Boss." + apiHelper.getMythicMobInstance(event.getEntity()).getType().getInternalName() + "." + s);
+                                        if (entry.getKey() == Integer.valueOf(s)) {
+                                            for (String command : RankeCommand) {
+                                                command = PlaceholderAPI.setPlaceholders(Bukkit.getPlayer(entry.getValue()), command);
+                                                Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), command);
+                                            }
+                                        }
+                                        if (entry.getKey() > Integer.valueOf(s)) {
+                                            Bukkit.getPlayer(entry.getValue()).sendMessage(ExceedRanke);
+                                        }
+                                    case "Random":
+                                        //没写,嘿嘿嘿
                                 }
                             }
                         }
