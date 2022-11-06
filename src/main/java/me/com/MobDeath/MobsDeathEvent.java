@@ -25,9 +25,11 @@ import static me.com.LoadConfig.LoadConfig.*;
 
 public class MobsDeathEvent implements Listener {
     private Plugin pl = Com.getPlugin();
-    public void MythicHook(){
+
+    public void MythicHook() {
         Bukkit.getPluginManager().registerEvents(this, Com.getPlugin());
     }
+
     @EventHandler
     public void DeathEvent(MythicMobDeathEvent event) {
         BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
@@ -54,35 +56,21 @@ public class MobsDeathEvent implements Listener {
                         playerDamges.add(mapping.getValue());
                         totalDamage += mapping.getValue();
                     }
+
                     int finalTotalDamage = totalDamage;
                     TotalDamageMap.put(entity.getEntityId(), finalTotalDamage);
                     sendMessage(playerNames, playerDamges, entity.getName(), finalTotalDamage, entity.getEntityId());
-                    if (pl.getConfig().contains("Boss." + apiHelper.getMythicMobInstance(event.getEntity()).getType().getInternalName()) && RankeReward.containsKey(entity.getEntityId())) {
-                        Iterator<Map.Entry<Integer, String>> it = RankeReward.get(entity.getEntityId()).entrySet().iterator();
-                        while (it.hasNext()) {
-                            Map.Entry<Integer, String> entry = it.next();
-                            for (String s : pl.getConfig().getConfigurationSection("Boss." +
-                                    apiHelper.getMythicMobInstance(event.getEntity()).getType().getInternalName()).getKeys(false)) {
-                                String a = pl.getConfig().getString("Boss." +
-                                        apiHelper.getMythicMobInstance(event.getEntity()).getType().getInternalName());
-                                Bukkit.getPlayer("Biulay").sendMessage(a);
-                                switch (s){
-                                    case "Ranke":
-                                        List<String> RankeCommand = pl.getConfig().getStringList
-                                                ("Boss." + apiHelper.getMythicMobInstance(event.getEntity()).getType().getInternalName() + "." + s);
-                                        if (entry.getKey() == Integer.valueOf(s)) {
-                                            for (String command : RankeCommand) {
-                                                command = PlaceholderAPI.setPlaceholders(Bukkit.getPlayer(entry.getValue()), command);
-                                                Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), command);
-                                            }
-                                        }
-                                        if (entry.getKey() > Integer.valueOf(s)) {
-                                            Bukkit.getPlayer(entry.getValue()).sendMessage(ExceedRanke);
-                                        }
-                                    case "Random":
-                                        //没写,嘿嘿嘿
-                                }
+
+                    //存入对应怪物id然后存入对应怪物id下的奖励分发类型,然后存入分发奖励类型下的奖励列表,
+                    ReWardHashMap.put(entity.getEntityId(), new ConcurrentHashMap<>());
+                    if (pl.getConfig().contains("Boss." + apiHelper.getMythicMobInstance(event.getEntity()).getType().getInternalName()) && PlayerRank.containsKey(entity.getEntityId())) {
+                        for (String ReWardType : pl.getConfig().getConfigurationSection("Boss." + apiHelper.getMythicMobInstance(event.getEntity()).getType().getInternalName()).getKeys(false)) {//查询怪物列表下的奖励类型
+                            ReWardHashMap.get(entity.getEntityId()).put(ReWardType, new ConcurrentHashMap<>());//然后存入对应怪物id的value中
+                            for (String RankListReward : pl.getConfig().getConfigurationSection("Boss." + apiHelper.getMythicMobInstance(event.getEntity()).getType().getInternalName() + "." + ReWardType).getKeys(false)) {//获取列表下的排名,
+                                List<String> RankeCommand = pl.getConfig().getStringList("Boss." + apiHelper.getMythicMobInstance(event.getEntity()).getType().getInternalName() + "." + ReWardType + "." + RankListReward);//获取该排名指令集下的指令
+                                ReWardHashMap.get(entity.getEntityId()).get(ReWardType).put(Integer.valueOf(RankListReward), RankeCommand);//存入奖励排名,和奖励排名下的指令列表
                             }
+                            ReWard(entity.getEntityId(), ReWardType);//怪物ID，和奖励类型
                         }
                     }
                 }
@@ -91,8 +79,9 @@ public class MobsDeathEvent implements Listener {
             }
         }, 0L);
     }
+
     public void sendMessage(ArrayList<String> playerNames, ArrayList<Double> playerDamages, String eventMob, int totalDamage, int entityId) {
-        RankeReward.put(entityId, new ConcurrentHashMap<>());
+        PlayerRank.put(entityId, new ConcurrentHashMap<>());
         String MonsterHover = null;
         String niyingle = null;
         Player player = null;
@@ -103,13 +92,12 @@ public class MobsDeathEvent implements Listener {
             if (player != null) {
                 DecimalFormat df = new DecimalFormat(DecimalFormat);
                 List<String> buxianghenichao = new ArrayList<>();
-                String DamageMessageStrings  = DamageMessageString;
+                String DamageMessageStrings = DamageMessageString;
                 buxianghenichao.add(DamageMessageStrings);
                 niyingle = new String();
                 MonsterHover = DeathMessage.replace("{mob}", eventMob).replace("{prefix}", DamageMessageStrings);
-                if(totalDamage != TotalDamageMap.get(entityId))
-                {
-                    System.out.println(Prefix + entityId + "总伤害错误: 原总伤害" + totalDamage+ "现已纠正为"+TotalDamageMap.get(entityId));
+                if (totalDamage != TotalDamageMap.get(entityId)) {
+                    System.out.println(Prefix + entityId + "总伤害错误: 原总伤害" + totalDamage + "现已纠正为" + TotalDamageMap.get(entityId));
                     totalDamage = TotalDamageMap.get(entityId);
                 }
                 for (int a = 0; a < HoverPrefix.size(); a++) {
@@ -118,7 +106,7 @@ public class MobsDeathEvent implements Listener {
                 for (int b = 0; b < playerNames.size(); b++) {
                     niyingle += DamageMessage.replace("{rank}", String.valueOf(b + 1)).replace("{player}", playerNames.get(b))
                             .replace("{damage}", String.valueOf(playerDamages.get(b))).replace("{percentage}", df.format((playerDamages.get(b) / TotalDamageMap.get(entityId)) * 100) + "%") + "\n";
-                            RankeReward.get(entityId).put(b+1,playerNames.get(b));
+                    PlayerRank.get(entityId).put(b + 1, playerNames.get(b));
                 }
                 for (int c = 0; c < Suffix.size(); c++) {
                     String u = Suffix.get(c) + "\n";
@@ -130,12 +118,12 @@ public class MobsDeathEvent implements Listener {
             }
             BaseComponent[] components;
             HoverEvent hoverEvent = new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(DeathMessageMap.get(entityId)).create());
-            if(Switch){
+            if (Switch) {
                 components = TextComponent.fromLegacyText(MonsterHover + " 怪物编号:" + entityId);
                 for (BaseComponent component : components) {
                     component.setHoverEvent(hoverEvent);
                 }
-            }else{
+            } else {
                 components = TextComponent.fromLegacyText(MonsterHover);
                 for (BaseComponent component : components) {
                     component.setHoverEvent(hoverEvent);
@@ -143,6 +131,34 @@ public class MobsDeathEvent implements Listener {
             }
             player.spigot().sendMessage(components);
         }
+    }
+
+    public void ReWard(int entityId, String reWardType) {
+        Iterator<Map.Entry<Integer, String>> it = PlayerRank.get(entityId).entrySet().iterator();
+        switch (reWardType) {
+            case "Rank":
+                Iterator<Map.Entry<Integer, List<String>>> List = ReWardHashMap.get(entityId).get(reWardType).entrySet().iterator();
+                while (it.hasNext()) {
+                    Map.Entry<Integer, String> entry = it.next();
+                    while (List.hasNext()) {
+                        Map.Entry<Integer, List<String>> entry1 = List.next();
+                        if (entry.getKey() == entry1.getKey()) {
+                            for (String Command : entry1.getValue()) {
+                                Command = PlaceholderAPI.setPlaceholders(Bukkit.getPlayer(entry.getValue()), Command);
+                                Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), Command);
+                            }
+                        }
+                        if(entry.getKey()>entry1.getKey()){
+                            Bukkit.getPlayer(entry.getValue()).sendMessage(ExceedRanke);
+                        }
+                    }
+                }
+        }
+        ReWardHashMap.remove(entityId);
+        PlayerRank.remove(entityId);
+        DeathMessageMap.remove(entityId);
+        DeathMessageMap.remove(entityId);
+        //完事后释放对应怪物id的hashmap里面乱七八糟的东西
     }
 }
 
