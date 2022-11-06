@@ -1,0 +1,38 @@
+Boss:
+  黄金史莱姆: #MythicMobs中怪物的ID，不是显示名
+    1:                                #按伤害排名发放奖励按照例子来写就可以了,不要随便缩进
+      - "give %player_name% stone 64"
+    2:                                #按照排名来给对应排名的玩家执行指令，如果伤害列表就2个玩家那么就执行到2排名的指令.
+      - "give %player_name% stone 64"
+    3:
+      - "give %player_name% stone 64"
+  终末龙:
+    1:
+      - "give %player_name% stone 64"
+      - "eco give %player_name% 500"
+    2:
+      - "give %player_name% stone 64"
+    3:
+      - "give %player_name% stone 64"
+    4:
+      - "give %player_name% stone 64"
+
+
+DeathMessage: "已击杀了 {mob} {prefix}"
+DamageMessageString: "§7§l[§4§l查看此次击杀伤害统计§7§l]"
+HoverPrefix:
+  - "{mob} 伤害统计: "
+  - "总伤害: {totaldamage}§2"
+DamageMessage:
+  - "§e{rank}. §b{player}: §a{damage} ({percentage})"
+Suffix:
+  - "伤害结算"
+Prefix: "[§eBoss奖励分配§r] "
+EntityDamage: "§f§l对 {mob} §f§l造成了 {entityDamage}" #玩家对设定的Boss造成伤害显示当前对该boss的伤害
+ExceedRanke: "§f§l已超出设定的奖励列表"  #如果玩家伤害排名超出了设定的奖励序列就给该玩家提示
+
+
+#以下设置不懂不要乱动
+DecimalFormat: "#.0"  #保留几位小数
+Switch: false #如果Boss伤害结算有异常可启用
+#自己服务器需要就写了这个小玩意，给大伙试试,后续打算加入超出奖励排名的后面所有玩家进行随机奖励

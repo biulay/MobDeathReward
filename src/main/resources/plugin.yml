@@ -1,0 +1,13 @@
+name: DeathRewards
+version: '${project.version}'
+main: me.com.Com
+api-version: 1.16
+website: Biulay
+authors: [ DeathRewards ]
+commands:
+  reload:
+    description: 重载插件
+permissions:
+  com.command.reload:
+    description: 重载插件
+    default: op
