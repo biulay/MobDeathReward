@@ -4,27 +4,18 @@ package me.com.EntityDamage;
 import io.lumine.mythic.bukkit.BukkitAPIHelper;
 import me.com.Com;
 import org.bukkit.Bukkit;
-import org.bukkit.Sound;
-import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import java.text.DecimalFormat;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static me.com.LoadConfig.LoadConfig.*;
-import static org.bukkit.event.entity.EntityDamageEvent.DamageCause.PROJECTILE;
 
 public class EntityDamageByEntity implements Listener {
     private Plugin pl = Com.getPlugin();
