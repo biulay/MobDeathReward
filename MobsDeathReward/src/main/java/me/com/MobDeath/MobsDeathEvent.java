@@ -29,7 +29,7 @@ public class MobsDeathEvent implements Listener {
         Bukkit.getPluginManager().registerEvents(this, Com.getPlugin());
     }
     @EventHandler
-    public void DeathEvent(MythicMobDeathEvent event) {  //真差不多得了,功能都一样,代码能差到哪去,我用MythicMobs处理mm怪物死亡事件,真和你没关系,你觉得哪里像,我就改哪里,行了吧
+    public void DeathEvent(MythicMobDeathEvent event) {
         BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
         scheduler.scheduleSyncDelayedTask(Bukkit.getServer().getPluginManager().getPlugin("DeathRewards"), new Runnable() { //嗯,这个线程不是你的了吧,
             @Override
@@ -118,7 +118,7 @@ public class MobsDeathEvent implements Listener {
                 }
                 buxianghenichao.add(niyingle);
                 DeathMessageMap.put(entityId, niyingle);
-                //向玩家发送悬浮文本[Hover不会也是你的吧]
+                //向玩家发送悬浮文本
             }
             BaseComponent[] components;
             HoverEvent hoverEvent = new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(DeathMessageMap.get(entityId)).create());
