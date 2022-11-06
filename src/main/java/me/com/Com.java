@@ -19,7 +19,7 @@ public class Com extends JavaPlugin {
     @Override
     public void onEnable() {
         // Plugin startup logic
-        this.setPlugin();
+        this.setPlugin();//检测更新
         LoadConfig.loadConfig(plugin); //加载plugins
         saveDefaultConfig();
         getCommand("reload").setExecutor(new ReloadConfig(this));
