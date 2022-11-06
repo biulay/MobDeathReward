@@ -137,7 +137,7 @@ public class MobsDeathEvent implements Listener {
         Iterator<Map.Entry<Integer, String>> it = PlayerRank.get(entityId).entrySet().iterator();
         switch (reWardType) {
             case "Rank":
-                Iterator<Map.Entry<Integer, List<String>>> List = ReWardHashMap.get(entityId).get(reWardType).entrySet().iterator();
+                Iterator<Map.Entry<Integer, List<String>>> List = ReWardHashMap.get(entityId).get("Rank").entrySet().iterator();
                 while (it.hasNext()) {
                     Map.Entry<Integer, String> entry = it.next();
                     while (List.hasNext()) {
