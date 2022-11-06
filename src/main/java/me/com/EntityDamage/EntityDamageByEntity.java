@@ -57,17 +57,14 @@ public class EntityDamageByEntity implements Listener {
         if (Com.EntityHashMap.get(MobId).containsKey(PlayerName)) {
             if (EntityDamage > 0) {
                 EntityDamage = Com.EntityHashMap.get(MobId).get(PlayerName) + EntityDamage;
-                EntityDamage = Double.parseDouble(df.format(EntityDamage));
                 Com.EntityHashMap.get(MobId).put(PlayerName, EntityDamage);
                 Bukkit.getPlayer(PlayerName).sendMessage(EntiyMessage);
             }
         }
         if (!Com.EntityHashMap.get(MobId).containsKey(PlayerName)) {
-            String EntityName = PlayerName;
-            if (Bukkit.getPlayer(EntityName) != null) {
-                if (Bukkit.getPlayer(EntityName).isOnline()) {
-                    EntityDamage = Double.parseDouble(df.format(EntityDamage));
-                    Com.EntityHashMap.get(MobId).put(EntityName, EntityDamage);
+            if (Bukkit.getPlayer(PlayerName) != null) {
+                if (Bukkit.getPlayer(PlayerName).isOnline()) {
+                    Com.EntityHashMap.get(MobId).put(PlayerName, Double.parseDouble(df.format(EntityDamage)));
                     Bukkit.getPlayer(PlayerName).sendMessage(EntiyMessage);
                 } else {
                     System.out.println(Prefix + "好像存储了个怪东西进去" + PlayerName);
