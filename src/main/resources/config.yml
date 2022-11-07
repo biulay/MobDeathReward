@@ -30,7 +30,7 @@ Prefix: "[§eBoss奖励分配§r] "
 EntityDamage: "§f§l对 {mob} §f§l造成了 {entityDamage}" #玩家对设定的Boss造成伤害显示当前对该boss的伤害
 ExceedRanke: "§f§l已超出设定的奖励列表"  #如果玩家伤害排名超出了设定的奖励序列就给该玩家提示
 RankeRewardMessage: "你已获得第{rank}名奖励" #给玩家发送对应排名的奖励消息
-
+Errorstorage: "好像存储了个怪东西进去"
 #以下设置不懂不要乱动
 DecimalFormat: "#.0"  #保留几位小数
 Switch: false #如果Boss伤害结算有异常可启用

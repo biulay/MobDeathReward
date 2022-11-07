@@ -16,6 +16,7 @@ public class LoadConfig {
     public static String DecimalFormat;
     public static String ExceedRanke;
     public static String RankeRewardMessage;
+    public static String Errorstorage;
     public static Boolean Switch;
     public static List<String> Suffix;
     public static List<String> HoverPrefix;
@@ -29,6 +30,7 @@ public class LoadConfig {
         DecimalFormat = plugin.getConfig().getString("DecimalFormat");
         DeathMessage = plugin.getConfig().getString("DeathMessage");
         EntityDamage = plugin.getConfig().getString("EntityDamage");
+        Errorstorage = plugin.getConfig().getString("Errorstorage");
         DamageMessage = plugin.getConfig().getString("DamageMessage");
         DamageMessageString = plugin.getConfig().getString("DamageMessageString");
         Suffix = plugin.getConfig().getStringList("Suffix");

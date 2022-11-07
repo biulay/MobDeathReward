@@ -67,7 +67,7 @@ public class EntityDamageByEntity implements Listener {
                     Com.EntityHashMap.get(MobId).put(PlayerName, Double.parseDouble(df.format(EntityDamage)));
                     Bukkit.getPlayer(PlayerName).sendMessage(EntiyMessage);
                 } else {
-                    System.out.println(Prefix + "好像存储了个怪东西进去" + PlayerName);
+                    System.out.println(Prefix + Errorstorage + PlayerName);
                 }
             }
         }
