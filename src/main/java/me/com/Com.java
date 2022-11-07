@@ -1,6 +1,7 @@
 package me.com;
 
 import me.com.EntityDamage.EntityDamageByEntity;
+import me.com.LoadConfig.Papi;
 import me.com.LoadConfig.ReloadConfig;
 import me.com.MobDeath.MobsDeathEvent;
 import org.bukkit.Bukkit;
@@ -29,6 +30,9 @@ public class Com extends JavaPlugin {
         System.out.println("    §a插件版本Version: §b" + this.getDescription().getVersion());
         if(Bukkit.getPluginManager().isPluginEnabled("Mythicmobs")){
             new MobsDeathEvent().MythicHook();
+        }
+        if(Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")){
+            new Papi().register();
         }
         this.getServer().getPluginManager().registerEvents(new MobsDeathEvent(),this);
         this.getServer().getPluginManager().registerEvents(new EntityDamageByEntity(),this);
