@@ -155,6 +155,7 @@ public class MobsDeathEvent implements Listener {
                                     Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), Command);
                                 }
                             }
+                            Bukkit.getPlayer(entry.getValue()).playSound(Bukkit.getPlayer(entry.getValue()).getLocation(), Sound.ENTITY_FISH_SWIM,1F,1F);
                         }
                         if (entry.getKey() > entry1.getKey()) {
                             if (Bukkit.getPlayer(entry.getValue()).isOnline()) {
@@ -211,6 +212,7 @@ public class MobsDeathEvent implements Listener {
             } else {
                 return;
             }
+            int p = 0;
             while (it2.hasNext()){
                 Map.Entry<String,String> Randoms = it2.next(); //为什么要这么做,因为我喜欢,而且直接访问Iterator会有点小问题,
                 if(sender == Randoms.getValue()) {
@@ -227,8 +229,9 @@ public class MobsDeathEvent implements Listener {
                                         Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), commadn);
                                         String nmmp = RandomRewardMessage.replace("{random}",String.valueOf(RandomList.getKey())+"%");
                                         Bukkit.getPlayer(Randoms.getValue()).sendMessage(nmmp);
+                                        Bukkit.getPlayer(sender).playSound(Bukkit.getPlayer(sender).getLocation(), Sound.ENTITY_FISH_SWIM,1F,1F);
                                         PlayerRandom.get(Mobsid.getKey()).remove(Randoms.getKey(), Randoms.getValue());//领取成功后就删除这个玩家的名字和对应的奖励类型
-                                        return;
+                                        p=1;
                                     }
                                 }
                             }
@@ -240,15 +243,20 @@ public class MobsDeathEvent implements Listener {
                                         Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), commadn);
                                         String nmmp = RandomRewardMessage.replace("{random}",String.valueOf(RandomList.getKey())+"%");
                                         Bukkit.getPlayer(Randoms.getValue()).sendMessage(nmmp);
+                                        Bukkit.getPlayer(sender).playSound(Bukkit.getPlayer(sender).getLocation(), Sound.ENTITY_FISH_SWIM,1F,1F);
                                         PlayerRandom.get(Mobsid.getKey()).remove(Randoms.getKey(), Randoms.getValue());//领取成功后就删除这个玩家的名字和对应的奖励类型
-                                        return;
+                                        p=1;
                                     }
                                 }
                             }
                         }
-                        Bukkit.getPlayer(sender).sendMessage(RandomRewardMessage2);
-                        PlayerRandom.get(Mobsid.getKey()).remove(Randoms.getKey(), Randoms.getValue());//领取成功后就删除这个玩家的名字和对应的奖励类型
+
                     }
+                }
+                if(p == 0){
+                    Bukkit.getPlayer(sender).sendMessage(RandomRewardMessage2);
+                    Bukkit.getPlayer(sender).playSound(Bukkit.getPlayer(sender).getLocation(), Sound.ENTITY_VILLAGER_NO,1F,1F);
+                    PlayerRandom.get(Mobsid.getKey()).remove(Randoms.getKey(), Randoms.getValue());//领取成功后就删除这个玩家的名字和对应的奖励类型
                 }
             }
         }

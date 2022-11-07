@@ -34,8 +34,8 @@ Boss:  #Rank是按排名分发奖励，Random随机分发奖励
 Click: "[ §e§l点击领取随机奖励 §r]" #随机奖励按钮
 RewardTimeout: "§c奖励领取超时" #随机奖励超时提示
 Timeout: 6000 #是这样的20L等于1秒,然后自己换算,功能是玩家如果没有在设定的时间里领取奖励那么就奖励就没有了,还有个功能就是清除HashMap中保存的相关数据
-Random+-: 5 #原理是这样的,我随机给玩家一个0~100的数，然后玩家的数+-这个1到5,如果匹配上了随机奖励的值就给这个奖励,一共是计算两次,+一次-一次,设置的数值越大，玩家获得的概率也越大
-DeathMessage: "已击杀了 {mob} {prefix}"
+Random+-: 5 #原理是这样的,我从代码里随机给玩家一个0~100的数，然后玩家的数+-这个1到5,如果匹配上了随机奖励的值就给这个奖励,一共是计算两次,+一次-一次,设置的数值越大，玩家获得的概率也越大
+DeathMessage: "§f§l已击杀了 {mob} {prefix}"
 DamageMessageString: "§7§l[§4§l查看此次击杀伤害统计§7§l]"
 HoverPrefix:
   - "{mob} 伤害统计: "
@@ -43,14 +43,16 @@ HoverPrefix:
 DamageMessage:
   - "§e{rank}. §b{player}: §a{damage} ({percentage})"
 Suffix:
-  - "伤害结算"
+  - "§f§l伤害结算"
 Prefix: "[§eBoss奖励分配§r] "
 EntityDamage: "§f§l对 {mob} §f§l造成了 {entityDamage}" #玩家对设定的Boss造成伤害显示当前对该boss的伤害
 ExceedRanke: "§f§l已超出设定的奖励列表"  #如果玩家伤害排名超出了设定的奖励序列就给该玩家提示
-RankeRewardMessage: "你已获得第{rank}名奖励" #给玩家发送对应排名的奖励消息
+RankeRewardMessage: "§f§l你已获得第{rank}名奖励" #给玩家发送对应排名的奖励消息
 Errorstorage: "好像存储了个怪东西进去"  #不用在意,后台输出的
-RandomRewardMessage: "你领取到了概率为 {random} 的奖励" #百分比奖励领取信息提示
-RandomRewardMessage2: "很遗憾本次随机奖励没有你的分" #玩家没有随机到奖励信息提示
+RandomRewardMessage: "§f§l你领取到了概率为 {random} 的奖励" #百分比奖励领取信息提示
+RandomRewardMessage2: "§f§l很遗憾本次随机奖励没有你的份" #玩家没有随机到奖励信息提示
+
+
 #以下设置不懂不要乱动
 DecimalFormat: "#.0"  #保留几位小数
 Switch: false #如果Boss伤害结算有异常可启用
