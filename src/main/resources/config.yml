@@ -1,6 +1,6 @@
 Boss:  #Rank是按排名分发奖励，Random随机分发奖励
   黄金史莱姆: #MythicMobs中怪物的ID，不是显示名
-    Rank:
+    Rank: #按排名分发奖励
       1:                                #按伤害排名发放奖励按照例子来写就可以了,不要随便缩进
         - "give %player_name% stone 64"
       2:                                #按照排名来给对应排名的玩家执行指令，如果伤害列表就2个玩家那么就执行到2排名的指令.
@@ -8,17 +8,31 @@ Boss:  #Rank是按排名分发奖励，Random随机分发奖励
       3:
         - "give %player_name% stone 64"
   终末龙:
-    Random: #指令，随机值
+    Random: #随机分发奖励，25是百分比,25%,10%,都差不多啦按照1~100就行
       25:
         - "give %player_name% stone 64"
       10:
         - "give %player_name% stone 64"
       90:
         - "give %player_name% stone 64"
+  钻石史莱姆:
+    Random: #一个怪物可设置两种奖励制度
+      25:
+        - "give %player_name% stone 64"
+      10:
+        - "give %player_name% stone 64"
+      90:
+        - "give %player_name% stone 64"
+    Rank:
+      1:
+        - "give %player_name% stone 64"
+      2:
+        - "give %player_name% stone 64"
+      3:
+        - "give %player_name% stone 64"
 
-
-Click: "[ §e§l点击领取随机奖励 §r]"
-RewardTimeout: "§c奖励领取超时"
+Click: "[ §e§l点击领取随机奖励 §r]" #随机奖励按钮
+RewardTimeout: "§c奖励领取超时" #随机奖励超时提示
 Timeout: 6000 #是这样的20L等于1秒,然后自己换算,功能是玩家如果没有在设定的时间里领取奖励那么就奖励就没有了,还有个功能就是清除HashMap中保存的相关数据
 Random+-: 5 #原理是这样的,我随机给玩家一个0~100的数，然后玩家的数+-这个1到5,如果匹配上了随机奖励的值就给这个奖励,一共是计算两次,+一次-一次,设置的数值越大，玩家获得的概率也越大
 DeathMessage: "已击杀了 {mob} {prefix}"
@@ -40,3 +54,4 @@ RandomRewardMessage2: "很遗憾本次随机奖励没有你的分" #玩家没有
 #以下设置不懂不要乱动
 DecimalFormat: "#.0"  #保留几位小数
 Switch: false #如果Boss伤害结算有异常可启用
+#尽量不要看源码对作者鞭尸,
