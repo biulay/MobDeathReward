@@ -4,16 +4,16 @@ import io.lumine.mythic.bukkit.BukkitAPIHelper;
 import io.lumine.mythic.bukkit.events.MythicMobDeathEvent;
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.com.Com;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.*;
 import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import java.text.DecimalFormat;
@@ -21,10 +21,11 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static me.com.Com.*;
-import static me.com.LoadConfig.LoadConfig.*;
+import static me.com.command.LoadConfig.*;
 
 public class MobsDeathEvent implements Listener {
     private Plugin pl = Com.getPlugin();
+    static int Mod;
 
     public void MythicHook() {
         Bukkit.getPluginManager().registerEvents(this, Com.getPlugin());
@@ -56,11 +57,9 @@ public class MobsDeathEvent implements Listener {
                         playerDamges.add(mapping.getValue());
                         totalDamage += mapping.getValue();
                     }
-
                     int finalTotalDamage = totalDamage;
                     TotalDamageMap.put(entity.getEntityId(), finalTotalDamage);
                     sendMessage(playerNames, playerDamges, entity.getName(), finalTotalDamage, entity.getEntityId());
-
                     //存入对应怪物id然后存入对应怪物id下的奖励分发类型,然后存入分发奖励类型下的奖励列表,
                     ReWardHashMap.put(entity.getEntityId(), new ConcurrentHashMap<>());
                     if (pl.getConfig().contains("Boss." + apiHelper.getMythicMobInstance(event.getEntity()).getType().getInternalName()) && PlayerRank.containsKey(entity.getEntityId())) {
@@ -70,14 +69,15 @@ public class MobsDeathEvent implements Listener {
                                 List<String> RankeCommand = pl.getConfig().getStringList("Boss." + apiHelper.getMythicMobInstance(event.getEntity()).getType().getInternalName() + "." + ReWardType + "." + RankListReward);//获取该排名指令集下的指令
                                 ReWardHashMap.get(entity.getEntityId()).get(ReWardType).put(Integer.valueOf(RankListReward), RankeCommand);//存入奖励排名,和奖励排名下的指令列表
                             }
-                            ReWard(entity.getEntityId(), ReWardType);//怪物ID，和奖励类型
+                            ReWard(entity.getEntityId(), ReWardType);//怪物ID,和奖励类型
                         }
                     }
                 }
-                Com.EntityHashMap.remove(entity.getEntityId());
-                TotalDamageMap.remove(entity.getEntityId());
+                EntityHashMap.remove(entity.getEntityId());
+                TotalDamageMap.remove(entity.getEntityId());//完事后清理掉该ID的总伤害Value
             }
         }, 0L);
+        return;
     }
 
     public void sendMessage(ArrayList<String> playerNames, ArrayList<Double> playerDamages, String eventMob, int totalDamage, int entityId) {
@@ -109,7 +109,7 @@ public class MobsDeathEvent implements Listener {
                     PlayerRank.get(entityId).put(b + 1, playerNames.get(b));
                 }
                 for (int c = 0; c < Suffix.size(); c++) {
-                    String u = Suffix.get(c) + "\n";
+                    String u = Suffix.get(c);
                     niyingle += u;
                 }
                 buxianghenichao.add(niyingle);
@@ -129,43 +129,129 @@ public class MobsDeathEvent implements Listener {
                     component.setHoverEvent(hoverEvent);
                 }
             }
+            DeathMessageMap.remove(entityId);
             player.spigot().sendMessage(components);
         }
     }
 
     public void ReWard(int entityId, String reWardType) {
-        Iterator<Map.Entry<Integer, String>> it = PlayerRank.get(entityId).entrySet().iterator();
+        Iterator<Map.Entry<Integer, String>> it = null;
+        if(PlayerRank.containsKey(entityId)){
+           it = PlayerRank.get(entityId).entrySet().iterator();
+        }
         switch (reWardType) {
             case "Rank":
-                Iterator<Map.Entry<Integer, List<String>>> List = ReWardHashMap.get(entityId).get("Rank").entrySet().iterator();
+                Iterator<Map.Entry<Integer, List<String>>> RankList = ReWardHashMap.get(entityId).get("Rank").entrySet().iterator();
                 while (it.hasNext()) {
                     Map.Entry<Integer, String> entry = it.next();
-                    while (List.hasNext()) {
-                        Map.Entry<Integer, List<String>> entry1 = List.next();
-                        if (entry.getKey() == entry1.getKey()) {
-                            String RankRewardMessage = RankeRewardMessage.replace("{rank}",String.valueOf(entry.getKey()));
-                            Bukkit.getPlayer(entry.getValue()).sendMessage(RankRewardMessage);
+                    while (RankList.hasNext()) {
+                        Map.Entry<Integer, List<String>> entry1 = RankList.next();
+                        if (entry.getKey() == entry1.getKey()) { //if playerrank == rewardrank
+                            String RankRewardMessage = RankeRewardMessage.replace("{rank}", String.valueOf(entry.getKey()));
+                            Bukkit.getPlayer(entry.getValue()).sendMessage(RankRewardMessage);//get player sendmessage rankReward
                             for (String Command : entry1.getValue()) {
-                                if(Bukkit.getPlayer(entry.getValue()).isOnline())
-                                {
+                                if (Bukkit.getPlayer(entry.getValue()).isOnline()) {
                                     Command = PlaceholderAPI.setPlaceholders(Bukkit.getPlayer(entry.getValue()), Command);
                                     Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), Command);
                                 }
                             }
                         }
-                        if(entry.getKey()>entry1.getKey()){
-                            if(Bukkit.getPlayer(entry.getValue()).isOnline()){
+                        if (entry.getKey() > entry1.getKey()) {
+                            if (Bukkit.getPlayer(entry.getValue()).isOnline()) {
                                 Bukkit.getPlayer(entry.getValue()).sendMessage(ExceedRanke);
                             }
                         }
                     }
                 }
+                ReWardHashMap.get(entityId).remove("Rank");//排名奖励发放完就清理掉Rank的奖励
+                new BukkitRunnable(){
+                    public void run(){
+                        PlayerRank.remove(entityId);//清除玩家排名和名字
+                    }
+                }.runTaskLater(plugin,Timeout);
+            case "Random":
+                TextComponent RandomReward = new TextComponent(TextComponent.fromLegacyText(Click));//设置文本点击事件
+                PlayerRandom.put(entityId, new ConcurrentHashMap<>()); //往随机map里放入怪物id
+                RandomReward.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/mdr random"));
+                while (it.hasNext()) {
+                    Map.Entry<Integer, String> entry = it.next();
+                    Bukkit.getPlayer(entry.getValue()).spigot().sendMessage(ChatMessageType.CHAT, RandomReward); //给玩家发送点击事件
+                    Bukkit.getPlayer(entry.getValue()).playSound(Bukkit.getPlayer(entry.getValue()).getLocation(), Sound.ENTITY_PLAYER_LEVELUP,1F,1F);
+                    PlayerRandom.get(entityId).put(reWardType, entry.getValue()); //往随机map里塞入,奖励类型,玩家id进一步保证奖励不会发错
+                    new BukkitRunnable() {
+                        public void run() {
+                            Iterator<Map.Entry<String, String>> its = PlayerRandom.get(entityId).entrySet().iterator();
+                            while (its.hasNext()){
+                                Map.Entry<String, String> MobsId = its.next();
+                                Bukkit.getPlayer(MobsId.getValue()).sendMessage(RewardTimeout);
+                            }
+                            PlayerRank.remove(entityId);
+                            ReWardHashMap.remove(entityId);
+                            PlayerRandom.remove(entityId);
+                        }
+                    }.runTaskLater(plugin,Timeout);
+                }
         }
-        ReWardHashMap.remove(entityId);
-        PlayerRank.remove(entityId);
-        DeathMessageMap.remove(entityId);
-        DeathMessageMap.remove(entityId);
-        //完事后释放对应怪物id的hashmap里面乱七八糟的东西
+    }
+    public static void RandomReward(String sender) {
+        //玩家点击后,获取RandomHashMap下的怪物key,然后判断是否有这个怪物id,如果有就给给RanDomList赋予RadomKey的指令列表,然后在赋予it2,Random的玩家value和奖励类型key,
+        //如果it2的value是点击领取的玩家则开始给玩家随机值,如果随机值符合random奖励的
+        Iterator<Map.Entry<Integer, ConcurrentHashMap<String, String>>> it = PlayerRandom.entrySet().iterator();//获取Radom下的怪物id.key
+        Iterator<Map.Entry<Integer, List<String>>> RankList = null;
+        Iterator<Map.Entry<String, String>> it2 = null;
+        while (it.hasNext()) {
+            Map.Entry<Integer, ConcurrentHashMap<String, String>> Mobsid = it.next();
+            if (PlayerRandom.containsKey(Mobsid.getKey())) { //如果Random中有这个怪物的ID
+                it2 = PlayerRandom.get(Mobsid.getKey()).entrySet().iterator();
+            } else {
+                return;
+            }
+            if (ReWardHashMap.containsKey(Mobsid.getKey())) { //如果RewardHashMap中有这个怪的ID
+                RankList = ReWardHashMap.get(Mobsid.getKey()).get("Random").entrySet().iterator();
+            } else {
+                return;
+            }
+            while (it2.hasNext()){
+                Map.Entry<String,String> Randoms = it2.next(); //为什么要这么做,因为我喜欢,而且直接访问Iterator会有点小问题,
+                if(sender == Randoms.getValue()) {
+                    if (Bukkit.getPlayer(sender).isOnline()) {
+                        Random r = new Random();
+                        int i = r.nextInt(100);
+                        while (RankList.hasNext()) {
+                            Map.Entry<Integer, List<String>> RandomList = RankList.next();
+                            for (int a = 1; a <= RandomNumber; a++) {
+                                int Number = i + a;
+                                if (Number == RandomList.getKey()) {
+                                    for (String commadn : RandomList.getValue()) {
+                                        commadn = PlaceholderAPI.setPlaceholders(Bukkit.getPlayer(Randoms.getValue()), commadn);
+                                        Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), commadn);
+                                        String nmmp = RandomRewardMessage.replace("{random}",String.valueOf(RandomList.getKey())+"%");
+                                        Bukkit.getPlayer(Randoms.getValue()).sendMessage(nmmp);
+                                        PlayerRandom.get(Mobsid.getKey()).remove(Randoms.getKey(), Randoms.getValue());//领取成功后就删除这个玩家的名字和对应的奖励类型
+                                        return;
+                                    }
+                                }
+                            }
+                            for (int a = 1; a <= RandomNumber; a++) {
+                                int Number = i - a;
+                                if (Number == RandomList.getKey()) {
+                                    for (String commadn : RandomList.getValue()) {
+                                        commadn = PlaceholderAPI.setPlaceholders(Bukkit.getPlayer(Randoms.getValue()), commadn);
+                                        Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), commadn);
+                                        String nmmp = RandomRewardMessage.replace("{random}",String.valueOf(RandomList.getKey())+"%");
+                                        Bukkit.getPlayer(Randoms.getValue()).sendMessage(nmmp);
+                                        PlayerRandom.get(Mobsid.getKey()).remove(Randoms.getKey(), Randoms.getValue());//领取成功后就删除这个玩家的名字和对应的奖励类型
+                                        return;
+                                    }
+                                }
+                            }
+                        }
+                        Bukkit.getPlayer(sender).sendMessage(RandomRewardMessage2);
+                        PlayerRandom.get(Mobsid.getKey()).remove(Randoms.getKey(), Randoms.getValue());//领取成功后就删除这个玩家的名字和对应的奖励类型
+                    }
+                }
+            }
+        }
     }
 }
 

@@ -1,24 +1,25 @@
 package me.com;
 
 import me.com.EntityDamage.EntityDamageByEntity;
-import me.com.LoadConfig.Papi;
-import me.com.LoadConfig.ReloadConfig;
+import me.com.command.Papi;
+import me.com.command.ReloadConfig;
 import me.com.MobDeath.MobsDeathEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
-import me.com.LoadConfig.LoadConfig;
+import me.com.command.LoadConfig;
 
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 //MonId,RankType,Rank,RankCommad
-public class Com extends JavaPlugin {
+public class Com extends JavaPlugin {//怪物id,奖励类型,奖励牌号,奖励牌号下的奖励列表 1
     public static ConcurrentHashMap<Integer,ConcurrentHashMap<String,ConcurrentHashMap<Integer, List<String>>>> ReWardHashMap = new ConcurrentHashMap<>();
-    public static ConcurrentHashMap<Integer,Integer> TotalDamageMap = new ConcurrentHashMap(); //hashmap不会也是你家的吧,真没必要,你赢了行了吧,我小胳膊拧不过大腿,您才是高人,
-    public static ConcurrentHashMap<Integer,String> DeathMessageMap = new ConcurrentHashMap(); //怪
-    public static ConcurrentHashMap<Integer,ConcurrentHashMap<Integer, String>> PlayerRank = new ConcurrentHashMap<>();//存放对应怪物ID并在对应怪物ID的hashmap按序存放玩家排名和玩家名字
-    public static ConcurrentHashMap<Integer,ConcurrentHashMap<String, Double>> EntityHashMap = new ConcurrentHashMap<>(); //存入对应怪物id的玩家名字和伤害
-    private static Plugin plugin;
+    public static ConcurrentHashMap<Integer,Integer> TotalDamageMap = new ConcurrentHashMap(); //怪物id,怪物总伤害 1
+    public static ConcurrentHashMap<Integer,String> DeathMessageMap = new ConcurrentHashMap(); //怪物id,死亡输出的信息 1
+    public static ConcurrentHashMap<Integer,ConcurrentHashMap<Integer, String>> PlayerRank = new ConcurrentHashMap<>();//用来处理排名奖励,存放对应怪物ID并在对应怪物ID的hashmap按序存放玩家排名和玩家名字 1
+    public static ConcurrentHashMap<Integer,ConcurrentHashMap<String, Double>> EntityHashMap = new ConcurrentHashMap<>(); //存入对应怪物id的玩家名字和伤害 1
+    public static ConcurrentHashMap<Integer,ConcurrentHashMap<String,String>> PlayerRandom = new ConcurrentHashMap<>();//用来处理随机奖励的 //怪物id,奖励类型和玩家名字
+    public static Plugin plugin;
     @Override
     public void onEnable() {
         // Plugin startup logic
@@ -26,8 +27,9 @@ public class Com extends JavaPlugin {
         this.setPlugin();this.setPlugin();this.setPlugin();
         LoadConfig.loadConfig(plugin); //加载plugins
         saveDefaultConfig();
-        getCommand("reload").setExecutor(new ReloadConfig(this));
+        getCommand("Mdr").setExecutor(new ReloadConfig(this));
         System.out.println("    §a插件版本Version: §b" + this.getDescription().getVersion());
+
         if(Bukkit.getPluginManager().isPluginEnabled("Mythicmobs")){
             new MobsDeathEvent().MythicHook();
         }
@@ -41,6 +43,12 @@ public class Com extends JavaPlugin {
     @Override
     public void onDisable() {
         System.out.println("    §cBoss奖励分配插件已卸载");
+        ReWardHashMap.clear();
+        TotalDamageMap.clear();
+        DeathMessageMap.clear();
+        PlayerRank.clear();
+        EntityHashMap.clear();
+        PlayerRandom.clear();
     }
     public static Plugin getPlugin() {
 

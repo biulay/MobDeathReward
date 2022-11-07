@@ -15,7 +15,7 @@ import org.bukkit.scheduler.BukkitScheduler;
 import java.text.DecimalFormat;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static me.com.LoadConfig.LoadConfig.*;
+import static me.com.command.LoadConfig.*;
 
 public class EntityDamageByEntity implements Listener {
     private Plugin pl = Com.getPlugin();
