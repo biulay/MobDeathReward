@@ -34,7 +34,7 @@ public class MobsDeathEvent implements Listener {
     @EventHandler
     public void DeathEvent(MythicMobDeathEvent event) {
         BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
-        scheduler.scheduleSyncDelayedTask(Bukkit.getServer().getPluginManager().getPlugin("DeathRewards"), new Runnable() { //嗯,这个线程不是你的了吧,
+        scheduler.scheduleSyncDelayedTask(Bukkit.getServer().getPluginManager().getPlugin("DeathRewards"), new Runnable() {
             @Override
             public void run() {
                 BukkitAPIHelper apiHelper = new BukkitAPIHelper();
