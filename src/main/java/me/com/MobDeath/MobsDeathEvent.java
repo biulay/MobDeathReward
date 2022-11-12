@@ -164,21 +164,24 @@ public class MobsDeathEvent implements Listener {
                         }
                     }
                 }
-                ReWardHashMap.get(entityId).remove("Rank");//排名奖励发放完就清理掉Rank的奖励
                 new BukkitRunnable(){
                     public void run(){
                         PlayerRank.remove(entityId);//清除玩家排名和名字
+                        ReWardHashMap.get(entityId).remove("Rank");//排名奖励发放完就清理掉Rank的奖励
                     }
                 }.runTaskLater(plugin,Timeout);
             case "Random":
                 TextComponent RandomReward = new TextComponent(TextComponent.fromLegacyText(Click));//设置文本点击事件
-                PlayerRandom.put(entityId, new ConcurrentHashMap<>()); //往随机map里放入怪物id
+                if(!PlayerRandom.containsKey(entityId))
+                {
+                    PlayerRandom.put(entityId, new ConcurrentHashMap<>()); //往随机map里放入怪物id
+                }
                 RandomReward.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/mdr random"));
                 while (it.hasNext()) {
                     Map.Entry<Integer, String> entry = it.next();
+                    PlayerRandom.get(entityId).put(reWardType, entry.getValue()); //往随机map里塞入,奖励类型,玩家id进一步保证奖励不会发错
                     Bukkit.getPlayer(entry.getValue()).spigot().sendMessage(ChatMessageType.CHAT, RandomReward); //给玩家发送点击事件
                     Bukkit.getPlayer(entry.getValue()).playSound(Bukkit.getPlayer(entry.getValue()).getLocation(), Sound.ENTITY_PLAYER_LEVELUP,1F,1F);
-                    PlayerRandom.get(entityId).put(reWardType, entry.getValue()); //往随机map里塞入,奖励类型,玩家id进一步保证奖励不会发错
                     new BukkitRunnable() {
                         public void run() {
                             Iterator<Map.Entry<String, String>> its = PlayerRandom.get(entityId).entrySet().iterator();
@@ -198,8 +201,8 @@ public class MobsDeathEvent implements Listener {
         //玩家点击后,获取RandomHashMap下的怪物key,然后判断是否有这个怪物id,如果有就给给RanDomList赋予RadomKey的指令列表,然后在赋予it2,Random的玩家value和奖励类型key,
         //如果it2的value是点击领取的玩家则开始给玩家随机值,如果随机值符合random奖励的
         Iterator<Map.Entry<Integer, ConcurrentHashMap<String, String>>> it = PlayerRandom.entrySet().iterator();//获取Radom下的怪物id.key
-        Iterator<Map.Entry<Integer, List<String>>> RankList = null;
-        Iterator<Map.Entry<String, String>> it2 = null;
+        Iterator<Map.Entry<Integer, List<String>>> RankList;
+        Iterator<Map.Entry<String, String>> it2;
         while (it.hasNext()) {
             Map.Entry<Integer, ConcurrentHashMap<String, String>> Mobsid = it.next();
             if (PlayerRandom.containsKey(Mobsid.getKey())) { //如果Random中有这个怪物的ID
@@ -207,7 +210,7 @@ public class MobsDeathEvent implements Listener {
             } else {
                 return;
             }
-            if (ReWardHashMap.containsKey(Mobsid.getKey())) { //如果RewardHashMap中有这个怪的ID
+            if (ReWardHashMap.containsKey(Mobsid.getKey()) && ReWardHashMap.get(Mobsid.getKey()).containsKey("Random")) { //如果RewardHashMap中有这个怪的ID
                 RankList = ReWardHashMap.get(Mobsid.getKey()).get("Random").entrySet().iterator();
             } else {
                 return;

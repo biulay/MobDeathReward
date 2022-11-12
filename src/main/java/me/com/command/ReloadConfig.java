@@ -8,6 +8,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import static me.com.Com.*;
+
 public class ReloadConfig implements CommandExecutor {
     private final Com plugin;
     public ReloadConfig(Com plugin) {this.plugin = plugin;
@@ -18,6 +20,12 @@ public class ReloadConfig implements CommandExecutor {
                 case "reload":
                     if (sender instanceof Player) {
                         if (sender.hasPermission("com.command.reload")) {
+                            ReWardHashMap.clear();
+                            TotalDamageMap.clear();
+                            DeathMessageMap.clear();
+                            PlayerRank.clear();
+                            EntityHashMap.clear();
+                            PlayerRandom.clear();
                             Com.getPlugin().reloadConfig();
                             LoadConfig.loadConfig(Com.getPlugin());
                             plugin.reloadConfig();
@@ -28,6 +36,12 @@ public class ReloadConfig implements CommandExecutor {
                             sender.sendMessage("§c[天天吃粑粑] 你没有权限执行这个命令!");
                         }
                     } else {
+                        ReWardHashMap.clear();
+                        TotalDamageMap.clear();
+                        DeathMessageMap.clear();
+                        PlayerRank.clear();
+                        EntityHashMap.clear();
+                        PlayerRandom.clear();
                         Com.getPlugin().reloadConfig();
                         LoadConfig.loadConfig(Com.getPlugin());
                         plugin.reloadConfig();
