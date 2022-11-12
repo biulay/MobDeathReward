@@ -20,6 +20,7 @@ public class ReloadConfig implements CommandExecutor {
                         if (sender.hasPermission("com.command.reload")) {
                             Com.getPlugin().reloadConfig();
                             LoadConfig.loadConfig(Com.getPlugin());
+                            plugin.reloadConfig();
                             this.plugin.saveDefaultConfig();
                             Com.EntityHashMap.clear();
                             sender.sendMessage("§e[天天吃粑粑] 插件已重载配置!");
@@ -29,6 +30,7 @@ public class ReloadConfig implements CommandExecutor {
                     } else {
                         Com.getPlugin().reloadConfig();
                         LoadConfig.loadConfig(Com.getPlugin());
+                        plugin.reloadConfig();
                         this.plugin.saveDefaultConfig();
                         Com.EntityHashMap.clear();
                         Bukkit.getConsoleSender().sendMessage("§e[天天吃粑粑] 插件已重载配置!");

@@ -24,7 +24,6 @@ public class Com extends JavaPlugin {//怪物id,奖励类型,奖励牌号,奖励
     public void onEnable() {
         // Plugin startup logic
         this.setPlugin();
-        this.setPlugin();this.setPlugin();this.setPlugin();
         LoadConfig.loadConfig(plugin); //加载plugins
         saveDefaultConfig();
         getCommand("Mdr").setExecutor(new ReloadConfig(this));
