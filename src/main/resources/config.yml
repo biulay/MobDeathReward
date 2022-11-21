@@ -22,6 +22,7 @@ Boss:  #Rank是按排名分发奖励，Random随机分发奖励
         - "give %player_name% stone 64"
       3:
         - "give %player_name% stone 64"
+
   天天吃粑粑:
     Rank:
       1:

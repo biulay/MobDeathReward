@@ -11,6 +11,7 @@ import me.com.command.LoadConfig;
 
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+
 //MonId,RankType,Rank,RankCommad
 public class Com extends JavaPlugin {//怪物id,奖励类型,奖励牌号,奖励牌号下的奖励列表 1
     public static ConcurrentHashMap<Integer,ConcurrentHashMap<String,ConcurrentHashMap<Integer, List<String>>>> ReWardHashMap = new ConcurrentHashMap<>();
@@ -28,7 +29,6 @@ public class Com extends JavaPlugin {//怪物id,奖励类型,奖励牌号,奖励
         saveDefaultConfig();
         getCommand("Mdr").setExecutor(new ReloadConfig(this));
         System.out.println("    §a插件版本Version: §b" + this.getDescription().getVersion());
-
         if(Bukkit.getPluginManager().isPluginEnabled("Mythicmobs")){
             new MobsDeathEvent().MythicHook();
         }
@@ -37,8 +37,15 @@ public class Com extends JavaPlugin {//怪物id,奖励类型,奖励牌号,奖励
         }
         this.getServer().getPluginManager().registerEvents(new MobsDeathEvent(),this);
         this.getServer().getPluginManager().registerEvents(new EntityDamageByEntity(),this);
+        getHMS("60");
     }
-
+    public String getHMS(String hours){
+        int time = Integer.valueOf(hours);
+        int hour = time/3600;
+        int m = (time%3600)/60;
+        int second = (time%3600)%60;
+        return hour+":"+m+":"+second;
+    }
     @Override
     public void onDisable() {
         System.out.println("    §cBoss奖励分配插件已卸载");
