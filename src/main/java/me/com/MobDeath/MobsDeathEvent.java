@@ -9,6 +9,7 @@ import net.md_5.bungee.api.chat.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -137,7 +138,7 @@ public class MobsDeathEvent implements Listener {
     public void ReWard(int entityId, String reWardType) {
         Iterator<Map.Entry<Integer, String>> it = null;
         if(PlayerRank.containsKey(entityId)){
-           it = PlayerRank.get(entityId).entrySet().iterator();
+            it = PlayerRank.get(entityId).entrySet().iterator();
         }
         switch (reWardType) {
             case "Rank":
@@ -168,60 +169,66 @@ public class MobsDeathEvent implements Listener {
                 }
                 new BukkitRunnable(){
                     public void run(){
-                        PlayerRank.remove(entityId);//清除玩家排名和名字
-                        ReWardHashMap.get(entityId).remove("Rank");//排名奖励发放完就清理掉Rank的奖励
+                        if(PlayerRank.containsKey(entityId)){
+                            PlayerRank.remove(entityId);//清除玩家排名和名字
+                        }
+                        if(ReWardHashMap.get(entityId).containsKey("Rank")){
+                            ReWardHashMap.get(entityId).remove("Rank");//排名奖励发放完就清理掉Rank的奖励
+                        }
                     }
                 }.runTaskLater(plugin,Timeout);
             case "Random":
+                List<String> Random = new ArrayList<>(); //创建一个List
                 TextComponent RandomReward = new TextComponent(TextComponent.fromLegacyText(Click));//设置文本点击事件
                 if(!PlayerRandom.containsKey(entityId))
                 {
-                    PlayerRandom.put(entityId, new ConcurrentHashMap<>()); //往随机map里放入怪物id
+                    PlayerRandom.put(entityId, new ArrayList<>()); //随机玩家hashmap中放入怪物ID Key
                 }
                 RandomReward.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/mdr random"));
                 while (it.hasNext()) {
                     Map.Entry<Integer, String> entry = it.next();
-                    PlayerRandom.get(entityId).put(reWardType, entry.getValue()); //往随机map里塞入,奖励类型,玩家id进一步保证奖励不会发错
+                    Random.add(entry.getValue()); //往List中添加玩家
                     Bukkit.getPlayer(entry.getValue()).spigot().sendMessage(ChatMessageType.CHAT, RandomReward); //给玩家发送点击事件
                     Bukkit.getPlayer(entry.getValue()).playSound(Bukkit.getPlayer(entry.getValue()).getLocation(), Sound.ENTITY_PLAYER_LEVELUP,1F,1F);
-                    new BukkitRunnable() {
-                        public void run() {
-                            Iterator<Map.Entry<String, String>> its = PlayerRandom.get(entityId).entrySet().iterator();
-                            while (its.hasNext()){
-                                Map.Entry<String, String> MobsId = its.next();
-                                Bukkit.getPlayer(MobsId.getValue()).sendMessage(RewardTimeout);
-                                PlayerRank.remove(entityId);
-                                ReWardHashMap.remove(entityId);
-                                PlayerRandom.remove(entityId);
-                            }
-                        }
-                    }.runTaskLater(plugin,Timeout);
 
                 }
+                PlayerRandom.put(entityId,Random); //而后打包添加进hashmap
+                new BukkitRunnable() {
+                    public void run() {
+                        List<String> a = PlayerRandom.get(entityId);
+                        for(String s : a){
+                            Bukkit.getPlayer(s).sendMessage(RewardTimeout);
+                        }
+                        if(PlayerRandom.containsKey(entityId)){
+                            PlayerRandom.remove(entityId);
+                        }
+                        if(ReWardHashMap.get(entityId).containsKey("Random")){
+                            ReWardHashMap.get(entityId).remove("Random");
+                        }
+                    }
+                }.runTaskLater(plugin,Timeout);
         }
     }
     public static void RandomReward(String sender) {
-        //玩家点击后,获取RandomHashMap下的怪物key,然后判断是否有这个怪物id,如果有就给给RanDomList赋予RadomKey的指令列表,然后在赋予it2,Random的玩家value和奖励类型key,
+        //玩家点击后,获取PlayerRandom下的对应怪物ID的玩家List包,如果符合条件对玩家进行随机奖励,不管是否有礼物都调用dabao传入本次循环的怪物ID和进行随机奖励的玩家,将该玩
+        // 家从PlayeRandom下该怪物ID的玩家List包中删除并重新打包
         //如果it2的value是点击领取的玩家则开始给玩家随机值,如果随机值符合random奖励的
-        Iterator<Map.Entry<Integer, ConcurrentHashMap<String, String>>> it = PlayerRandom.entrySet().iterator();//获取Radom下的怪物id.key
+        List<String> x = new ArrayList<>();
         Iterator<Map.Entry<Integer, List<String>>> RankList;
-        Iterator<Map.Entry<String, String>> it2;
-        while (it.hasNext()) {
-            Map.Entry<Integer, ConcurrentHashMap<String, String>> Mobsid = it.next();
-            if (PlayerRandom.containsKey(Mobsid.getKey())) { //如果Random中有这个怪物的ID
-                it2 = PlayerRandom.get(Mobsid.getKey()).entrySet().iterator();
-            } else {
-                return;
+        for (Map.Entry<Integer, List<String>> entry : PlayerRandom.entrySet()) { //循环获取PlayerRandom中的玩家List
+            x = PlayerRandom.get(entry.getKey());
+            for(String h : x){
+                getLogger().info(h);
             }
-            if (ReWardHashMap.containsKey(Mobsid.getKey()) && ReWardHashMap.get(Mobsid.getKey()).containsKey("Random")) { //如果RewardHashMap中有这个怪的ID
-                RankList = ReWardHashMap.get(Mobsid.getKey()).get("Random").entrySet().iterator();
+            if (ReWardHashMap.containsKey(entry.getKey()) && ReWardHashMap.get(entry.getKey()).containsKey("Random")) { //如果RewardHashMap中有这个怪的ID
+                RankList = ReWardHashMap.get(entry.getKey()).get("Random").entrySet().iterator();
             } else {
                 return;
             }
             int p = 0;
-            while (it2.hasNext()){
-                Map.Entry<String,String> Randoms = it2.next(); //为什么要这么做,因为我喜欢,而且直接访问Iterator会有点小问题,
-                if(sender == Randoms.getValue()) {
+            for (String b : x) {
+                String Randoms = b;
+                if (sender == Randoms) {
                     if (Bukkit.getPlayer(sender).isOnline()) {
                         Random r = new Random();
                         int i = r.nextInt(100);
@@ -231,14 +238,13 @@ public class MobsDeathEvent implements Listener {
                                 int Number = i + a;
                                 if (Number == RandomList.getKey()) {
                                     for (String commadn : RandomList.getValue()) {
-                                        commadn = PlaceholderAPI.setPlaceholders(Bukkit.getPlayer(Randoms.getValue()), commadn);
+                                        commadn = PlaceholderAPI.setPlaceholders(Bukkit.getPlayer(Randoms), commadn);
                                         Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), commadn);
-                                        String nmmp = RandomRewardMessage.replace("{random}",String.valueOf(RandomList.getKey())+"%");
-                                        Bukkit.getPlayer(Randoms.getValue()).sendMessage(nmmp);
-                                        Bukkit.getPlayer(sender).playSound(Bukkit.getPlayer(sender).getLocation(), Sound.ENTITY_FISH_SWIM,1F,1F);
-                                        PlayerRandom.get(Mobsid.getKey()).remove(Randoms.getKey(), Randoms.getValue());//领取成功后就删除这个玩家的名字和对应的奖励类型
-                                        getLogger().info(Randoms.getKey()+Randoms.getValue());
-                                        p=1;
+                                        String nmmp = RandomRewardMessage.replace("{random}", String.valueOf(RandomList.getKey()) + "%");
+                                        Bukkit.getPlayer(Randoms).sendMessage(nmmp);
+                                        Bukkit.getPlayer(sender).playSound(Bukkit.getPlayer(sender).getLocation(), Sound.ENTITY_FISH_SWIM, 1F, 1F);
+                                        dabao(Randoms, entry.getKey());
+                                        p = 1;
                                         return;
                                     }
                                 }
@@ -247,30 +253,36 @@ public class MobsDeathEvent implements Listener {
                                 int Number = i - a;
                                 if (Number == RandomList.getKey()) {
                                     for (String commadn : RandomList.getValue()) {
-                                        commadn = PlaceholderAPI.setPlaceholders(Bukkit.getPlayer(Randoms.getValue()), commadn);
+                                        commadn = PlaceholderAPI.setPlaceholders(Bukkit.getPlayer(Randoms), commadn);
                                         Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), commadn);
-                                        String nmmp = RandomRewardMessage.replace("{random}",String.valueOf(RandomList.getKey())+"%");
-                                        Bukkit.getPlayer(Randoms.getValue()).sendMessage(nmmp);
-                                        Bukkit.getPlayer(sender).playSound(Bukkit.getPlayer(sender).getLocation(), Sound.ENTITY_FISH_SWIM,1F,1F);
-                                        PlayerRandom.get(Mobsid.getKey()).remove(Randoms.getKey(), Randoms.getValue());//领取成功后就删除这个玩家的名字和对应的奖励类型
-                                        getLogger().info(Randoms.getKey()+Randoms.getValue());
-                                        p=1;
+                                        String nmmp = RandomRewardMessage.replace("{random}", String.valueOf(RandomList.getKey()) + "%");
+                                        Bukkit.getPlayer(Randoms).sendMessage(nmmp);
+                                        Bukkit.getPlayer(sender).playSound(Bukkit.getPlayer(sender).getLocation(), Sound.ENTITY_FISH_SWIM, 1F, 1F);
+                                        dabao(Randoms, entry.getKey());
+                                        p = 1;
                                         return;
                                     }
                                 }
                             }
                         }
-                        if(p == 0){
+                        if (p == 0) {
                             Bukkit.getPlayer(sender).sendMessage(RandomRewardMessage2);
-                            Bukkit.getPlayer(sender).playSound(Bukkit.getPlayer(sender).getLocation(), Sound.ENTITY_VILLAGER_NO,1F,1F);
-                            PlayerRandom.get(Mobsid.getKey()).remove(Randoms.getKey(), Randoms.getValue());//领取成功后就删除这个玩家的名字和对应的奖励类型
-                            getLogger().info(Randoms.getKey()+Randoms.getValue());
+                            Bukkit.getPlayer(sender).playSound(Bukkit.getPlayer(sender).getLocation(), Sound.ENTITY_VILLAGER_NO, 1F, 1F);
+                            dabao(Randoms, entry.getKey());
+                            return;
                         }
                     }
+                } else {
+                    return;
                 }
-
             }
         }
     }
+    public static void dabao(String player,Integer Key) {
+        List<String> a = new ArrayList<>();
+        a = PlayerRandom.get(Key);
+        a.remove(player);
+        PlayerRandom.remove(Key);
+        PlayerRandom.put(Key, a);
+    }
 }
-

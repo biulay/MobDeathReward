@@ -22,7 +22,7 @@ public class Com extends JavaPlugin {//怪物id,奖励类型,奖励牌号,奖励
     public static ConcurrentHashMap<Integer,String> DeathMessageMap = new ConcurrentHashMap(); //怪物id,死亡输出的信息 1
     public static ConcurrentHashMap<Integer,ConcurrentHashMap<Integer, String>> PlayerRank = new ConcurrentHashMap<>();//用来处理排名奖励,存放对应怪物ID并在对应怪物ID的hashmap按序存放玩家排名和玩家名字 1
     public static ConcurrentHashMap<Integer,ConcurrentHashMap<String, Double>> EntityHashMap = new ConcurrentHashMap<>(); //存入对应怪物id的玩家名字和伤害 1
-    public static ConcurrentHashMap<Integer,ConcurrentHashMap<String,String>> PlayerRandom = new ConcurrentHashMap<>();//用来处理随机奖励的 //怪物id,奖励类型和玩家名字
+    public static ConcurrentHashMap<Integer,List<String>> PlayerRandom = new ConcurrentHashMap<>();//用来处理随机奖励的 //怪物id,奖励类型和玩家名字
     public static Plugin plugin;
     @Override
     public void onEnable() {
