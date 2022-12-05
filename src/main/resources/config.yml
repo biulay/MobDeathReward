@@ -7,7 +7,7 @@ Boss:  #Rank是按排名分发奖励，Random随机分发奖励 中文:插件功
         - "give %player_name% stone 64"
       90:
         - "give %player_name% stone 64"
-  钻石史莱姆:
+  黄金史莱姆:
     Random: #一个怪物可设置两种奖励制度#probability
       25: #25%
         - "give %player_name% stone 64"
