@@ -1,17 +1,15 @@
 package me.com.command;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
-import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 
-import static me.com.command.LoadConfig.Prefix;
 import static org.bukkit.Bukkit.getLogger;
 
 public class Papi extends PlaceholderExpansion {
     public Papi(){
         //Bukkit.getConsoleSender().sendMessage(Prefix + "Papi allready registered");
-        getLogger().info("    §aplaceholderapi: §b√");
+        getLogger().info("                          §aplaceholderapi: §b√");
     }
     @NotNull
     public String getAuthor() {

@@ -8,9 +8,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import me.com.command.LoadConfig;
+import org.checkerframework.checker.units.qual.Prefix;
 
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+
+import static org.bukkit.Bukkit.getLogger;
+
 //MonId,RankType,Rank,RankCommad
 public class Com extends JavaPlugin {//怪物id,奖励类型,奖励牌号,奖励牌号下的奖励列表 1
     public static ConcurrentHashMap<Integer,ConcurrentHashMap<String,ConcurrentHashMap<Integer, List<String>>>> ReWardHashMap = new ConcurrentHashMap<>();
@@ -31,10 +35,13 @@ public class Com extends JavaPlugin {//怪物id,奖励类型,奖励牌号,奖励
 
         if(Bukkit.getPluginManager().isPluginEnabled("Mythicmobs")){
             new MobsDeathEvent().MythicHook();
-
+        }else{
+            getLogger().info("                          §aMythicMobs5.0+: §c×");
         }
         if(Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")){
             new Papi().register();
+        }else {
+            getLogger().info("                          §aplaceholderapi: §c×");
         }
         this.getServer().getPluginManager().registerEvents(new MobsDeathEvent(),this);
         this.getServer().getPluginManager().registerEvents(new EntityDamageByEntity(),this);
@@ -42,21 +49,15 @@ public class Com extends JavaPlugin {//怪物id,奖励类型,奖励牌号,奖励
 
     @Override
     public void onDisable() {
-        getLogger().info("    §cBoss奖励分配插件已卸载");
-        ReWardHashMap.clear();
-        TotalDamageMap.clear();
-        DeathMessageMap.clear();
-        PlayerRank.clear();
-        EntityHashMap.clear();
-        PlayerRandom.clear();
+        getLogger().info("      §cBoss奖励分配插件已卸载");
+        ReloadConfig.Clear();
     }
+    public void setPlugin() {plugin = this;}
     public static Plugin getPlugin() {
-
         if(plugin == null)
         {
-            System.out.println("    §a重载配置文件");
+            System.out.println(LoadConfig.Prefix + "    §a重载配置文件");
             LoadConfig.loadConfig(plugin);
         }
         return plugin;}
-    public void setPlugin() {plugin = this;}
 }

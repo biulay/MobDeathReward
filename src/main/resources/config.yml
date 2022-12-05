@@ -1,4 +1,4 @@
-Boss:  #Rank是按排名分发奖励，Random随机分发奖励
+Boss:  #Rank是按排名分发奖励，Random随机分发奖励 中文:插件功能只为1.16~1.19.2服务,在低的版本你可以联系我,如果我有时间的话    EN:The plugin function is only for 1.16~1.19.2 service, in the lower version you can contact me, if I have time
   终末龙:
     Random: #随机分发奖励，25是百分比,25%,10%,都差不多啦按照1~100就行
       25:
@@ -8,30 +8,20 @@ Boss:  #Rank是按排名分发奖励，Random随机分发奖励
       90:
         - "give %player_name% stone 64"
   钻石史莱姆:
-    Random: #一个怪物可设置两种奖励制度
-      25:
+    Random: #一个怪物可设置两种奖励制度#probability
+      25: #25%
         - "give %player_name% stone 64"
-      10:
+      10: #10%
         - "give %player_name% stone 64"
-      90:
+      90: #90%
         - "give %player_name% stone 64"
     Rank:
-      1:
+      1: #top 1
         - "give %player_name% stone 64"
-      2:
+      2: #top 2
         - "give %player_name% stone 64"
-      3:
+      3: #top 3
         - "give %player_name% stone 64"
-  天天吃粑粑:
-    Rank:
-      1:
-        - "give %player_name% stone 64"
-        - "give %player_name% stone 64"
-      2:
-        - "give %player_name% stone 64"
-      3:
-        - "give %player_name% stone 64"
-
 Click: "[ §e§l点击领取随机奖励 §r]" #随机奖励按钮
 RewardTimeout: "§c奖励领取超时" #随机奖励超时提示
 Timeout: 6000 #是这样的20L等于1秒,然后自己换算,功能是玩家如果没有在设定的时间里领取奖励那么就奖励就没有了,还有个功能就是清除HashMap中保存的相关数据

@@ -4,7 +4,9 @@ main: me.com.Com
 api-version: 1.16
 website: Biulay
 authors: [ DeathRewards ]
-depend: [MythicMobs]
+depend:
+  - MythicMobs
+  - PlaceholderAPI
 commands:
   Mdr:
-    description: The core party command.
+    description: this is one commands.

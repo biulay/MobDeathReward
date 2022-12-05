@@ -28,7 +28,7 @@ public class MobsDeathEvent implements Listener {
     private Plugin pl = Com.getPlugin();
     public void MythicHook() {
         Bukkit.getPluginManager().registerEvents(this, Com.getPlugin());
-        getLogger().info("    §aMythicMobs5.0+: §b√");
+        getLogger().info("                          §aMythicMobs5.0+: §b√");
     }
 
     @EventHandler
@@ -105,7 +105,7 @@ public class MobsDeathEvent implements Listener {
                 }
                 for (int b = 0; b < playerNames.size(); b++) {
                     niyingle += DamageMessage.replace("{rank}", String.valueOf(b + 1)).replace("{player}", playerNames.get(b))
-                            .replace("{damage}", String.valueOf(playerDamages.get(b))).replace("{percentage}", df.format((playerDamages.get(b) / TotalDamageMap.get(entityId)) * 100) + "%") + "\n";
+                            .replace("{damage}", df.format(playerDamages.get(b))).replace("{percentage}", df.format((playerDamages.get(b) / TotalDamageMap.get(entityId)) * 100) + "%") + "\n";
                     PlayerRank.get(entityId).put(b + 1, playerNames.get(b));
                 }
                 for (int c = 0; c < Suffix.size(); c++) {
@@ -190,12 +190,13 @@ public class MobsDeathEvent implements Listener {
                             while (its.hasNext()){
                                 Map.Entry<String, String> MobsId = its.next();
                                 Bukkit.getPlayer(MobsId.getValue()).sendMessage(RewardTimeout);
+                                PlayerRank.remove(entityId);
+                                ReWardHashMap.remove(entityId);
+                                PlayerRandom.remove(entityId);
                             }
-                            PlayerRank.remove(entityId);
-                            ReWardHashMap.remove(entityId);
-                            PlayerRandom.remove(entityId);
                         }
                     }.runTaskLater(plugin,Timeout);
+
                 }
         }
     }
@@ -236,6 +237,7 @@ public class MobsDeathEvent implements Listener {
                                         Bukkit.getPlayer(Randoms.getValue()).sendMessage(nmmp);
                                         Bukkit.getPlayer(sender).playSound(Bukkit.getPlayer(sender).getLocation(), Sound.ENTITY_FISH_SWIM,1F,1F);
                                         PlayerRandom.get(Mobsid.getKey()).remove(Randoms.getKey(), Randoms.getValue());//领取成功后就删除这个玩家的名字和对应的奖励类型
+                                        getLogger().info(Randoms.getKey()+Randoms.getValue());
                                         p=1;
                                         return;
                                     }
@@ -251,20 +253,22 @@ public class MobsDeathEvent implements Listener {
                                         Bukkit.getPlayer(Randoms.getValue()).sendMessage(nmmp);
                                         Bukkit.getPlayer(sender).playSound(Bukkit.getPlayer(sender).getLocation(), Sound.ENTITY_FISH_SWIM,1F,1F);
                                         PlayerRandom.get(Mobsid.getKey()).remove(Randoms.getKey(), Randoms.getValue());//领取成功后就删除这个玩家的名字和对应的奖励类型
+                                        getLogger().info(Randoms.getKey()+Randoms.getValue());
                                         p=1;
                                         return;
                                     }
                                 }
                             }
                         }
-
+                        if(p == 0){
+                            Bukkit.getPlayer(sender).sendMessage(RandomRewardMessage2);
+                            Bukkit.getPlayer(sender).playSound(Bukkit.getPlayer(sender).getLocation(), Sound.ENTITY_VILLAGER_NO,1F,1F);
+                            PlayerRandom.get(Mobsid.getKey()).remove(Randoms.getKey(), Randoms.getValue());//领取成功后就删除这个玩家的名字和对应的奖励类型
+                            getLogger().info(Randoms.getKey()+Randoms.getValue());
+                        }
                     }
                 }
-                if(p == 0){
-                    Bukkit.getPlayer(sender).sendMessage(RandomRewardMessage2);
-                    Bukkit.getPlayer(sender).playSound(Bukkit.getPlayer(sender).getLocation(), Sound.ENTITY_VILLAGER_NO,1F,1F);
-                    PlayerRandom.get(Mobsid.getKey()).remove(Randoms.getKey(), Randoms.getValue());//领取成功后就删除这个玩家的名字和对应的奖励类型
-                }
+
             }
         }
     }

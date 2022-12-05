@@ -9,6 +9,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import static me.com.Com.*;
+import static me.com.command.LoadConfig.Prefix;
 
 public class ReloadConfig implements CommandExecutor {
     private final Com plugin;
@@ -20,34 +21,24 @@ public class ReloadConfig implements CommandExecutor {
                 case "reload":
                     if (sender instanceof Player) {
                         if (sender.hasPermission("com.command.reload")) {
-                            ReWardHashMap.clear();
-                            TotalDamageMap.clear();
-                            DeathMessageMap.clear();
-                            PlayerRank.clear();
-                            EntityHashMap.clear();
-                            PlayerRandom.clear();
+                            Clear();
                             Com.getPlugin().reloadConfig();
                             LoadConfig.loadConfig(Com.getPlugin());
                             plugin.reloadConfig();
                             this.plugin.saveDefaultConfig();
                             Com.EntityHashMap.clear();
-                            sender.sendMessage("§e[天天吃粑粑] 插件已重载配置!");
+                            sender.sendMessage(Prefix + " 插件已重载配置!");
                         } else {
-                            sender.sendMessage("§c[天天吃粑粑] 你没有权限执行这个命令!");
+                            sender.sendMessage(Prefix + " 你没有权限执行这个命令!");
                         }
                     } else {
-                        ReWardHashMap.clear();
-                        TotalDamageMap.clear();
-                        DeathMessageMap.clear();
-                        PlayerRank.clear();
-                        EntityHashMap.clear();
-                        PlayerRandom.clear();
+                        Clear();
                         Com.getPlugin().reloadConfig();
                         LoadConfig.loadConfig(Com.getPlugin());
                         plugin.reloadConfig();
                         this.plugin.saveDefaultConfig();
                         Com.EntityHashMap.clear();
-                        Bukkit.getConsoleSender().sendMessage("§e[天天吃粑粑] 插件已重载配置!");
+                        Bukkit.getConsoleSender().sendMessage(Prefix + "§e 插件已重载配置!");
                     }
                     break;
                 case "random":
@@ -56,6 +47,14 @@ public class ReloadConfig implements CommandExecutor {
             }
         }
         return false;
+    }
+    public static void Clear(){
+        ReWardHashMap.clear();
+        TotalDamageMap.clear();
+        DeathMessageMap.clear();
+        PlayerRank.clear();
+        EntityHashMap.clear();
+        PlayerRandom.clear();
     }
 
 }
