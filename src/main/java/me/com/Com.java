@@ -27,10 +27,11 @@ public class Com extends JavaPlugin {//怪物id,奖励类型,奖励牌号,奖励
         LoadConfig.loadConfig(plugin); //加载plugins
         saveDefaultConfig();
         getCommand("Mdr").setExecutor(new ReloadConfig(this));
-        System.out.println("    §a插件版本Version: §b" + this.getDescription().getVersion());
+        getLogger().info("    §a插件版本Version: §b" + this.getDescription().getVersion());
 
         if(Bukkit.getPluginManager().isPluginEnabled("Mythicmobs")){
             new MobsDeathEvent().MythicHook();
+
         }
         if(Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")){
             new Papi().register();
@@ -41,7 +42,7 @@ public class Com extends JavaPlugin {//怪物id,奖励类型,奖励牌号,奖励
 
     @Override
     public void onDisable() {
-        System.out.println("    §cBoss奖励分配插件已卸载");
+        getLogger().info("    §cBoss奖励分配插件已卸载");
         ReWardHashMap.clear();
         TotalDamageMap.clear();
         DeathMessageMap.clear();

@@ -22,13 +22,13 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static me.com.Com.*;
 import static me.com.command.LoadConfig.*;
+import static org.bukkit.Bukkit.getLogger;
 
 public class MobsDeathEvent implements Listener {
     private Plugin pl = Com.getPlugin();
-    static int Mod;
-
     public void MythicHook() {
         Bukkit.getPluginManager().registerEvents(this, Com.getPlugin());
+        getLogger().info("    §aMythicMobs5.0+: §b√");
     }
 
     @EventHandler
@@ -162,7 +162,9 @@ public class MobsDeathEvent implements Listener {
                                 Bukkit.getPlayer(entry.getValue()).sendMessage(ExceedRanke);
                             }
                         }
+                        break;
                     }
+
                 }
                 new BukkitRunnable(){
                     public void run(){
@@ -235,6 +237,7 @@ public class MobsDeathEvent implements Listener {
                                         Bukkit.getPlayer(sender).playSound(Bukkit.getPlayer(sender).getLocation(), Sound.ENTITY_FISH_SWIM,1F,1F);
                                         PlayerRandom.get(Mobsid.getKey()).remove(Randoms.getKey(), Randoms.getValue());//领取成功后就删除这个玩家的名字和对应的奖励类型
                                         p=1;
+                                        return;
                                     }
                                 }
                             }
@@ -249,6 +252,7 @@ public class MobsDeathEvent implements Listener {
                                         Bukkit.getPlayer(sender).playSound(Bukkit.getPlayer(sender).getLocation(), Sound.ENTITY_FISH_SWIM,1F,1F);
                                         PlayerRandom.get(Mobsid.getKey()).remove(Randoms.getKey(), Randoms.getValue());//领取成功后就删除这个玩家的名字和对应的奖励类型
                                         p=1;
+                                        return;
                                     }
                                 }
                             }

@@ -6,10 +6,12 @@ import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 
 import static me.com.command.LoadConfig.Prefix;
+import static org.bukkit.Bukkit.getLogger;
 
 public class Papi extends PlaceholderExpansion {
     public Papi(){
-        Bukkit.getConsoleSender().sendMessage(Prefix + "Papi allready registered");
+        //Bukkit.getConsoleSender().sendMessage(Prefix + "Papi allready registered");
+        getLogger().info("    §aplaceholderapi: §b√");
     }
     @NotNull
     public String getAuthor() {
