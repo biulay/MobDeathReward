@@ -42,7 +42,7 @@ public class Com extends JavaPlugin {//怪物id,奖励类型,奖励牌号,奖励
         }else {
             getLogger().info("                          §aplaceholderapi: §c×");
         }
-            getLogger().info("              §e§lauthoring: Biulay");
+            getLogger().info("    §e§lauthoring: Biulay");
         this.getServer().getPluginManager().registerEvents(new MobsDeathEvent(),this);
         this.getServer().getPluginManager().registerEvents(new EntityDamageByEntity(),this);
     }
