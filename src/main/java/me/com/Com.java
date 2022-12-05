@@ -32,7 +32,6 @@ public class Com extends JavaPlugin {//怪物id,奖励类型,奖励牌号,奖励
         saveDefaultConfig();
         getCommand("Mdr").setExecutor(new ReloadConfig(this));
         getLogger().info("    §a插件版本Version: §b" + this.getDescription().getVersion());
-
         if(Bukkit.getPluginManager().isPluginEnabled("Mythicmobs")){
             new MobsDeathEvent().MythicHook();
         }else{
@@ -43,6 +42,7 @@ public class Com extends JavaPlugin {//怪物id,奖励类型,奖励牌号,奖励
         }else {
             getLogger().info("                          §aplaceholderapi: §c×");
         }
+            getLogger().info("              §e§lauthoring: Biulay");
         this.getServer().getPluginManager().registerEvents(new MobsDeathEvent(),this);
         this.getServer().getPluginManager().registerEvents(new EntityDamageByEntity(),this);
     }
