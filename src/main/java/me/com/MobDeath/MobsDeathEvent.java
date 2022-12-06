@@ -138,15 +138,14 @@ public class MobsDeathEvent implements Listener {
     public void ReWard(int entityId, String reWardType) {
         Iterator<Map.Entry<Integer, String>> it = null;
         Iterator<Map.Entry<Integer, List<String>>> RankList;
-        if(PlayerRank.containsKey(entityId)){
+        if (PlayerRank.containsKey(entityId)) {
             it = PlayerRank.get(entityId).entrySet().iterator();
         }
         switch (reWardType) {
             case "Random":
                 List<String> Random = new ArrayList<>(); //创建一个List
                 TextComponent RandomReward = new TextComponent(TextComponent.fromLegacyText(Click));//设置文本点击事件
-                if(!PlayerRandom.containsKey(entityId))
-                {
+                if (!PlayerRandom.containsKey(entityId)) {
                     PlayerRandom.put(entityId, new ArrayList<>()); //随机玩家hashmap中放入怪物ID Key
                 }
                 RandomReward.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/mdr random"));
@@ -154,27 +153,27 @@ public class MobsDeathEvent implements Listener {
                     Map.Entry<Integer, String> entry = it.next();
                     Random.add(entry.getValue()); //往List中添加玩家
                     Bukkit.getPlayer(entry.getValue()).spigot().sendMessage(ChatMessageType.CHAT, RandomReward); //给玩家发送点击事件
-                    Bukkit.getPlayer(entry.getValue()).playSound(Bukkit.getPlayer(entry.getValue()).getLocation(), Sound.ENTITY_PLAYER_LEVELUP,1F,1F);
+                    Bukkit.getPlayer(entry.getValue()).playSound(Bukkit.getPlayer(entry.getValue()).getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1F, 1F);
                 }
-                PlayerRandom.put(entityId,Random); //而后打包添加进hashmap
+                PlayerRandom.put(entityId, Random); //而后打包添加进hashmap
                 new BukkitRunnable() {
                     public void run() {
                         List<String> a = PlayerRandom.get(entityId);
-                        for(String s : a){
+                        for (String s : a) {
                             Bukkit.getPlayer(s).sendMessage(RewardTimeout);
                         }
-                        if(PlayerRandom.containsKey(entityId)){
+                        if (PlayerRandom.containsKey(entityId)) {
                             PlayerRandom.remove(entityId);
                         }
-                        if(ReWardHashMap.get(entityId).containsKey("Random")){
+                        if (ReWardHashMap.get(entityId).containsKey("Random")) {
                             ReWardHashMap.get(entityId).remove("Random");
                         }
                     }
-                }.runTaskLater(plugin,Timeout);
+                }.runTaskLater(plugin, Timeout);
             case "Rank":
-                if(ReWardHashMap.get(entityId).containsKey("Rank")){
+                if (ReWardHashMap.get(entityId).containsKey("Rank")) {
                     RankList = ReWardHashMap.get(entityId).get("Rank").entrySet().iterator();
-                }else {
+                } else {
                     return;
                 }
                 while (it.hasNext()) {
@@ -190,7 +189,7 @@ public class MobsDeathEvent implements Listener {
                                     Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), Command);
                                 }
                             }
-                            Bukkit.getPlayer(entry.getValue()).playSound(Bukkit.getPlayer(entry.getValue()).getLocation(), Sound.ENTITY_FISH_SWIM,1F,1F);
+                            Bukkit.getPlayer(entry.getValue()).playSound(Bukkit.getPlayer(entry.getValue()).getLocation(), Sound.ENTITY_FISH_SWIM, 1F, 1F);
                         }
                         if (entry.getKey() > entry1.getKey()) {
                             if (Bukkit.getPlayer(entry.getValue()).isOnline()) {
@@ -200,16 +199,16 @@ public class MobsDeathEvent implements Listener {
                         break;
                     }
                 }
-                new BukkitRunnable(){
-                    public void run(){
-                        if(PlayerRank.containsKey(entityId)){
+                new BukkitRunnable() {
+                    public void run() {
+                        if (PlayerRank.containsKey(entityId)) {
                             PlayerRank.remove(entityId);//清除玩家排名和名字
                         }
-                        if(ReWardHashMap.get(entityId).containsKey("Rank")){
+                        if (ReWardHashMap.get(entityId).containsKey("Rank")) {
                             ReWardHashMap.get(entityId).remove("Rank");//排名奖励发放完就清理掉Rank的奖励
                         }
                     }
-                }.runTaskLater(plugin,Timeout);
+                }.runTaskLater(plugin, Timeout);
         }
     }
     public static void RandomReward(String sender) {
