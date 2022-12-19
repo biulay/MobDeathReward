@@ -32,11 +32,10 @@ public class EntityDamageByEntity implements Listener {
                 @Override
                 public void run() {
                     entityDamage[0] = ((LivingEntity) event.getEntity()).getHealth(); //获取被攻击后的血量然后进行计算,之所以不用getFinal是因为用as属性插件后,对怪物的伤害有点怪怪的,就用比较原始的方法
-                    double value = finalEntityHealth - entityDamage[0];
                     if (pl.getConfig().contains("Boss." + apiHelper.getMythicMobInstance(event.getEntity()).getType().getInternalName())) {
                         Entity entity = event.getEntity();
-                        double damage = value;
-                        String EntityDamageMessage = EntityDamage.replace("{mob}", apiHelper.getMythicMobInstance(event.getEntity()).getType().getInternalName()).replace("{entityDamage}", String.valueOf(df.format(value)));
+                        double damage = finalEntityHealth - entityDamage[0];
+                        String EntityDamageMessage = EntityDamage.replace("{mob}", apiHelper.getMythicMobInstance(event.getEntity()).getType().getInternalName()).replace("{entityDamage}", String.valueOf(df.format(damage)));
                         Storage(entity.getEntityId(), event.getDamager().getName(), damage, EntityDamageMessage);
                     }
                 }
