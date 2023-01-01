@@ -9,7 +9,6 @@ import net.md_5.bungee.api.chat.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -27,7 +26,7 @@ import static org.bukkit.Bukkit.getLogger;
 
 public class MobsDeathEvent implements Listener {
     private Plugin pl = Com.getPlugin();
-    public void MythicHook() {
+    public MobsDeathEvent(){
         Bukkit.getPluginManager().registerEvents(this, Com.getPlugin());
         getLogger().info("                          §aMythicMobs5.0+: §b√");
     }
@@ -35,7 +34,7 @@ public class MobsDeathEvent implements Listener {
     @EventHandler
     public void DeathEvent(MythicMobDeathEvent event) {
         BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
-        scheduler.scheduleSyncDelayedTask(Bukkit.getServer().getPluginManager().getPlugin("DeathRewards"), new Runnable() {
+        scheduler.scheduleSyncDelayedTask(pl, new Runnable() {
             @Override
             public void run() {
                 BukkitAPIHelper apiHelper = new BukkitAPIHelper();
@@ -224,59 +223,60 @@ public class MobsDeathEvent implements Listener {
             int p = 0;
             for (String b : PlayerRandom.get(entry.getKey())) {
                 String Randoms = b;
-                if (sender == Randoms) {
-                    if (Bukkit.getPlayer(sender).isOnline()) {
-                        Random r = new Random();
-                        int i = r.nextInt(100);
-                        while (RankList.hasNext()) {
-                            Map.Entry<Integer, List<String>> RandomList = RankList.next();
-                            for (int a = 1; a <= RandomNumber; a++) {
-                                int Number = i + a;
-                                if (Number == RandomList.getKey()) {
-                                    for (String commadn : RandomList.getValue()) {
-                                        commadn = PlaceholderAPI.setPlaceholders(Bukkit.getPlayer(Randoms), commadn);
-                                        Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), commadn);
-                                        String nmmp = RandomRewardMessage.replace("{random}", String.valueOf(RandomList.getKey()) + "%");
-                                        Bukkit.getPlayer(Randoms).sendMessage(nmmp);
-                                        Bukkit.getPlayer(sender).playSound(Bukkit.getPlayer(sender).getLocation(), Sound.ENTITY_FISH_SWIM, 1F, 1F);
-                                        dabao(Randoms, entry.getKey());
-                                        p = 1;
-                                        return;
-                                    }
-                                }
-                            }
-                            for (int a = 1; a <= RandomNumber; a++) {
-                                int Number = i - a;
-                                if (Number == RandomList.getKey()) {
-                                    for (String commadn : RandomList.getValue()) {
-                                        commadn = PlaceholderAPI.setPlaceholders(Bukkit.getPlayer(Randoms), commadn);
-                                        Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), commadn);
-                                        String nmmp = RandomRewardMessage.replace("{random}", String.valueOf(RandomList.getKey()) + "%");
-                                        Bukkit.getPlayer(Randoms).sendMessage(nmmp);
-                                        Bukkit.getPlayer(sender).playSound(Bukkit.getPlayer(sender).getLocation(), Sound.ENTITY_FISH_SWIM, 1F, 1F);
-                                        dabao(Randoms, entry.getKey());
-                                        p = 1;
-                                        return;
-                                    }
-                                }
+                if (sender != Randoms) {
+                    return;
+                }
+                if (Bukkit.getPlayer(sender).isOnline()) {
+                    Random r = new Random();
+                    int i = r.nextInt(100);
+                    while (RankList.hasNext()) {
+                        Map.Entry<Integer, List<String>> RandomList = RankList.next();
+                        for (int a = 1; a <= RandomNumber; a++) {
+                            int Number = i + a;
+                            if (Number == RandomList.getKey()) {
+                                Success(Randoms, RandomList.getValue(),RandomList.getKey(),sender,entry.getKey()); //传参给Random
+                                p = 1;
+                                return;
                             }
                         }
-                        if (p == 0) {
-                            Bukkit.getPlayer(sender).sendMessage(RandomRewardMessage2);
-                            Bukkit.getPlayer(sender).playSound(Bukkit.getPlayer(sender).getLocation(), Sound.ENTITY_VILLAGER_NO, 1F, 1F);
-                            dabao(Randoms, entry.getKey());
-                            return;
+                        for (int a = 1; a <= RandomNumber; a++) {
+                            int Number = i - a;
+                            if (Number == RandomList.getKey()) {
+                                Success(Randoms, RandomList.getValue(),RandomList.getKey(),sender,entry.getKey());
+                                p = 1;
+                                return;
+                            }
                         }
+                    }
+                    if (p == 0) {
+                        Fail(Randoms,entry.getKey(),sender);
+                        return;
                     }
                 }
             }
         }
     }
-    public static void dabao(String player,Integer Key) {
-        List<String> a = new ArrayList<>();
+    public static void Success(String p, List<String> value, Integer rewardKey, String sender, Integer mobKey){ //执行并调用dabao将p该玩家从奖励获取列表中删除
+        for (String commadn : value) {
+            commadn = PlaceholderAPI.setPlaceholders(Bukkit.getPlayer(p), commadn);
+            Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), commadn);
+            String nmmp = RandomRewardMessage.replace("{random}", rewardKey + "%");
+            Bukkit.getPlayer(p).sendMessage(nmmp);
+            Bukkit.getPlayer(sender).playSound(Bukkit.getPlayer(sender).getLocation(), Sound.ENTITY_FISH_SWIM, 1F, 1F);
+            Dabao(p, mobKey);
+        }
+    }
+    public static void Fail(String p,Integer mobKey,String sender){
+        Bukkit.getPlayer(sender).sendMessage(RandomRewardMessage2);
+        Bukkit.getPlayer(sender).playSound(Bukkit.getPlayer(sender).getLocation(), Sound.ENTITY_VILLAGER_NO, 1F, 1F);
+        Dabao(p, mobKey);
+    }
+    public static void Dabao(String player,Integer Key) {
+        List<String> a;
         a = PlayerRandom.get(Key);
         a.remove(player);
         PlayerRandom.remove(Key);
         PlayerRandom.put(Key, a);
+        a.clear();
     }
 }

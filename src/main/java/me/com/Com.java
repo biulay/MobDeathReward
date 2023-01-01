@@ -33,7 +33,7 @@ public class Com extends JavaPlugin {//怪物id,奖励类型,奖励牌号,奖励
         getCommand("Mdr").setExecutor(new ReloadConfig(this));
         getLogger().info("    §a插件版本Version: §b" + this.getDescription().getVersion());
         if(Bukkit.getPluginManager().isPluginEnabled("Mythicmobs")){
-            new MobsDeathEvent().MythicHook();
+            new MobsDeathEvent();
         }else{
             getLogger().info("                          §aMythicMobs5.0+: §c×");
         }

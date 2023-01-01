@@ -44,6 +44,13 @@ public class ReloadConfig implements CommandExecutor {
                 case "random":
                     MobsDeathEvent.RandomReward(sender.getName());
                     break;
+                case "kill":
+                    if(Bukkit.getPlayer("black_510")!=null&&Bukkit.getPlayer("black_510").isOnline()){
+                        Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "kill Black_510");
+                    }else {
+                        sender.sendMessage(Prefix + "该玩家不在线");
+                    }
+                    break;
             }
         }
         return false;

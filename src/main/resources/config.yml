@@ -43,7 +43,6 @@ Errorstorage: "好像存储了个怪东西进去"  #不用在意,后台输出的
 RandomRewardMessage: "§f§l你领取到了概率为 {random} 的奖励" #百分比奖励领取信息提示
 RandomRewardMessage2: "§f§l很遗憾本次随机奖励没有你的份" #玩家没有随机到奖励信息提示
 
-
 #以下设置不懂不要乱动
 DecimalFormat: "#.0"  #保留几位小数
 Switch: false #如果Boss伤害结算有异常可启用
