@@ -9,7 +9,7 @@ import static org.bukkit.Bukkit.getLogger;
 public class Papi extends PlaceholderExpansion {
     public Papi(){
         //Bukkit.getConsoleSender().sendMessage(Prefix + "Papi allready registered");
-        getLogger().info("                          §aplaceholderapi: §b√");
+        getLogger().info("                          §aPlaceholderapi: §b√");
     }
     @NotNull
     public String getAuthor() {

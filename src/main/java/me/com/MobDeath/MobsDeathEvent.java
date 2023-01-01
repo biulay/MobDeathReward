@@ -64,12 +64,19 @@ public class MobsDeathEvent implements Listener {
                     ReWardHashMap.put(entity.getEntityId(), new ConcurrentHashMap<>());
                     if (pl.getConfig().contains("Boss." + apiHelper.getMythicMobInstance(event.getEntity()).getType().getInternalName()) && PlayerRank.containsKey(entity.getEntityId())) {
                         for (String ReWardType : pl.getConfig().getConfigurationSection("Boss." + apiHelper.getMythicMobInstance(event.getEntity()).getType().getInternalName()).getKeys(false)) {//查询怪物列表下的奖励类型
-                            ReWardHashMap.get(entity.getEntityId()).put(ReWardType, new ConcurrentHashMap<>());//然后存入对应怪物id的value中
-                            for (String RankListReward : pl.getConfig().getConfigurationSection("Boss." + apiHelper.getMythicMobInstance(event.getEntity()).getType().getInternalName() + "." + ReWardType).getKeys(false)) {//获取列表下的排名,
-                                List<String> RankeCommand = pl.getConfig().getStringList("Boss." + apiHelper.getMythicMobInstance(event.getEntity()).getType().getInternalName() + "." + ReWardType + "." + RankListReward);//获取该排名指令集下的指令
-                                ReWardHashMap.get(entity.getEntityId()).get(ReWardType).put(Integer.valueOf(RankListReward), RankeCommand);//存入奖励排名,和奖励排名下的指令列表
+                            if(ReWardType == "Killer"){
+                                List<String> RankeCommand = pl.getConfig().getStringList("Boss." + apiHelper.getMythicMobInstance(event.getEntity()).getType().getInternalName() + ".Killer");//获取该奖励类型下的指令集
+                                Slain(event.getKiller().getName(),RankeCommand);
                             }
-                            ReWard(entity.getEntityId(), ReWardType);//怪物ID,和奖励类型
+                            else
+                            {
+                                ReWardHashMap.get(entity.getEntityId()).put(ReWardType, new ConcurrentHashMap<>());//然后存入对应怪物id的value中
+                                for (String RankListReward : pl.getConfig().getConfigurationSection("Boss." + apiHelper.getMythicMobInstance(event.getEntity()).getType().getInternalName() + "." + ReWardType).getKeys(false)) {//获取列表下的排名,
+                                    List<String> RankeCommand = pl.getConfig().getStringList("Boss." + apiHelper.getMythicMobInstance(event.getEntity()).getType().getInternalName() + "." + ReWardType + "." + RankListReward);//获取该排名指令集下的指令
+                                    ReWardHashMap.get(entity.getEntityId()).get(ReWardType).put(Integer.valueOf(RankListReward), RankeCommand);//存入奖励排名,和奖励排名下的指令列表
+                                }
+                                ReWard(entity.getEntityId(), ReWardType);//怪物ID,和奖励类型
+                            }
                         }
                     }
                 }
@@ -79,7 +86,6 @@ public class MobsDeathEvent implements Listener {
         }, 0L);
         return;
     }
-
     public void sendMessage(ArrayList<String> playerNames, ArrayList<Double> playerDamages, String eventMob, int totalDamage, int entityId) {
         PlayerRank.put(entityId, new ConcurrentHashMap<>());
         String MonsterHover = null;
@@ -179,17 +185,18 @@ public class MobsDeathEvent implements Listener {
                     Map.Entry<Integer, String> entry = it.next();
                     while (RankList.hasNext()) {
                         Map.Entry<Integer, List<String>> entry1 = RankList.next();
-                        if (entry.getKey() == entry1.getKey()) { //if playerrank == rewardrank
-                            String RankRewardMessage = RankeRewardMessage.replace("{rank}", String.valueOf(entry.getKey()));
-                            Bukkit.getPlayer(entry.getValue()).sendMessage(RankRewardMessage);//get player sendmessage rankReward
-                            for (String Command : entry1.getValue()) {
-                                if (Bukkit.getPlayer(entry.getValue()).isOnline()) {
-                                    Command = PlaceholderAPI.setPlaceholders(Bukkit.getPlayer(entry.getValue()), Command);
-                                    Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), Command);
-                                }
-                            }
-                            Bukkit.getPlayer(entry.getValue()).playSound(Bukkit.getPlayer(entry.getValue()).getLocation(), Sound.ENTITY_FISH_SWIM, 1F, 1F);
+                        if (entry.getKey() != entry1.getKey()) { //if playerrank == rewardrank
+                            return;
                         }
+                        String RankRewardMessage = RankeRewardMessage.replace("{rank}", String.valueOf(entry.getKey()));
+                        Bukkit.getPlayer(entry.getValue()).sendMessage(RankRewardMessage);//get player sendmessage rankReward
+                        for (String Command : entry1.getValue()) {
+                            if (Bukkit.getPlayer(entry.getValue()).isOnline()) {
+                                Command = PlaceholderAPI.setPlaceholders(Bukkit.getPlayer(entry.getValue()), Command);
+                                Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), Command);
+                            }
+                        }
+                        Bukkit.getPlayer(entry.getValue()).playSound(Bukkit.getPlayer(entry.getValue()).getLocation(), Sound.ENTITY_FISH_SWIM, 1F, 1F);
                         if (entry.getKey() > entry1.getKey()) {
                             if (Bukkit.getPlayer(entry.getValue()).isOnline()) {
                                 Bukkit.getPlayer(entry.getValue()).sendMessage(ExceedRanke);
@@ -248,12 +255,15 @@ public class MobsDeathEvent implements Listener {
                             }
                         }
                     }
-                    if (p == 0) {
-                        Fail(Randoms,entry.getKey(),sender);
-                        return;
-                    }
+                    if (p == 0) {Fail(Randoms,entry.getKey(),sender);return;}
                 }
             }
+        }
+    }
+    public static void Slain(String p,List<String> list){
+        for(String command: list){
+            command = PlaceholderAPI.setPlaceholders(Bukkit.getPlayer(p),command);
+            Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), command);
         }
     }
     public static void Success(String p, List<String> value, Integer rewardKey, String sender, Integer mobKey){ //执行并调用dabao将p该玩家从奖励获取列表中删除
